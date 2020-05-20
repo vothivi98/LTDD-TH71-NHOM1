@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ShoesApp</string>
+    <string name="Open">ShoesApp</string>
+    <string name="Close">ShoesApp</string>
+    <string name="text_search">Tìm kiếm</string>
+    <string name="text_nike">NIKE</string>
+    <string name="main">Main</string>
+    <string name="txt_sp">Sản Phẩm</string>
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_cart">Giỏ hàng</string>
+    <string name="nav_account">Tài khoản</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
