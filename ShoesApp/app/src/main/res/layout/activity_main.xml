@@ -4,11 +4,11 @@
             android:textSize="50sp"
             xmlns:tools="http://schemas.android.com/tools"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/activity_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:ignore="MissingConstraints"
-            android:shape="rectangle">
+            android:shape="rectangle"
+            android:id="@+id/activity_main">
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,38 +22,13 @@
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <!--        app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
 
         <RelativeLayout
             android:id="@+id/headerView"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
             android:background="@color/colorAccent"
             android:orientation="vertical">
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:id="@+id/cardSearch"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginLeft="16dp"-->
-<!--                android:layout_marginTop="25dp"-->
-<!--                android:layout_marginRight="16dp"-->
-<!--                app:cardCornerRadius="25dp"-->
-<!--                app:cardElevation="0dp">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="50dp"-->
-<!--                    android:background="@color/colorSearch"-->
-<!--                    android:drawableStart="@drawable/ico_search"-->
-<!--                    android:drawablePadding="10dp"-->
-<!--                    android:gravity="center_vertical"-->
-<!--                    android:padding="10dp"-->
-<!--                    android:text="@string/text_search"-->
-<!--                    android:textColor="@color/colorPrimaryDark"-->
-<!--                    android:textSize="15sp" />-->
-                <!--                còn sửa icon search nhỏ lại-->
-<!--            </androidx.cardview.widget.CardView>-->
 
                 <SearchView
                     android:id="@+id/cardSearch"
@@ -234,7 +209,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="17dp"
-                android:layout_marginRight="16dp">
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="70dp">
                 <!--IMG 1-->
                 <RelativeLayout
                     android:id="@+id/relativeLayout4"

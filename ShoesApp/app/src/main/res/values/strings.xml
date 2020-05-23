@@ -9,6 +9,23 @@
     <string name="nav_home">Trang chủ</string>
     <string name="nav_cart">Giỏ hàng</string>
     <string name="nav_account">Tài khoản</string>
+    <string name="nhap_tk">Nhập tài khoản</string>
+    <string name="nhap_pw">Nhập mật khẩu</string>
+    <string name="quenmatkhau">Quên mật khẩu ?</string>
+    <string name="btnDangnhap">Đăng nhập</string>
+    <string name="dangkitaikhoan">Bạn chưa có tài khoản? Hãy đăng kí.</string>
+
+    <string name="signup_hoten">Nhập họ và tên</string>
+    <string name="signup_diachi">Nhập địa chỉ</string>
+    <string name="signup_sdt"> Nhập số điện thoại</string>
+    <string name="signup_email">Nhập email</string>
+    <string name="signup_nhaplaimatkhau">Nhập lại mật khẩu</string>
+    <string name="signup_dangki">Đăng kí</string>
+    <string name="signup_dangnhaplai">Bạn đã có tài khoản? Hãy đăng nhập.</string>
+
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
