@@ -1,63 +1,30 @@
 package com.example.shoesapp;
 
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.VideoView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
-
-
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.widget.FrameLayout;
-import android.widget.GridLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.Toast;
-import android.widget.VideoView;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.model.Products;
 import com.example.myadapter.ImageAdapter;
-import com.example.myadapter.ProductAdapter;
+import com.example.myadapter.RecyclerViewAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringJoiner;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity<ProductAdapter> extends AppCompatActivity {
     String id = "";
     String name = "";
     String img = "";
@@ -68,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mainNav;
     private FrameLayout mainFrame;
     private ListView lv;
+    private ArrayList<Integer> imageURLs = new ArrayList<>();
     ArrayList<Products> arrayProduct;
     ProductAdapter productAdapter;
 
@@ -129,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         mainNav.setOnNavigationItemSelectedListener(navListener);
         mainNav.clearFocus();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new HomeActivity()).commit();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new HomeActivity()).commit();
         //
 //        arrayProduct = new ArrayList<>();
 //
@@ -141,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
 //        lv.setAdapter(productAdapter);
         //getDAta();
        // postData();
+
+        listImageLogo();
     }
 
     @Override
@@ -269,4 +239,24 @@ public class MainActivity extends AppCompatActivity {
 //
 //        requestQueue.add(stringRequest);
 //    }
+
+    private void listImageLogo() {
+
+        imageURLs.add(R.drawable.round_lens_black_48);
+        imageURLs.add(R.drawable.round_lens_black_48);
+        imageURLs.add(R.drawable.round_lens_black_48);
+        imageURLs.add(R.drawable.round_lens_black_48);
+        imageURLs.add(R.drawable.round_lens_black_48);
+        imageURLs.add(R.drawable.round_lens_black_48);
+
+        initRecyclerView();
+    }
+
+    private void initRecyclerView(){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        androidx.recyclerview.widget.RecyclerView recyclerView = findViewById(R.id.recyclerView_Logo);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        RecyclerViewAdapter adapter  = new RecyclerViewAdapter(this, imageURLs);
+        recyclerView.setAdapter(adapter);
+    }
 }

@@ -41,4 +41,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.android.volley:volley:1.1.1' // Đọc dc nội dung url
     implementation 'com.squareup.picasso:picasso:2.5.2'
+
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'com.android.support:recyclerview-v7:29.1.1'
+
+    implementation 'com.github.bumptech.glide:glide:4.4.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
 }

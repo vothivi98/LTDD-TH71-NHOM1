@@ -30,259 +30,110 @@
             android:background="@color/colorAccent"
             android:orientation="vertical">
 
-                <SearchView
-                    android:id="@+id/cardSearch"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/circle"
-                    android:layout_marginTop="16dp"
-                    android:queryHint="@string/text_search"/>
+            <SearchView
+                android:id="@+id/cardSearch"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/circle"
+                android:layout_marginTop="16dp"
+                android:queryHint="@string/text_search"/>
 
 
-                        <VideoView
-                            android:id="@+id/videoView"
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:layout_below="@+id/cardSearch"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginTop="16dp" />
+            <VideoView
+                android:id="@+id/videoView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@+id/cardSearch"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="16dp" />
 
-                        <RelativeLayout
-                            android:id="@+id/cardView_sp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/videoView"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="17dp"
-                            android:layout_marginRight="16dp"
-                            android:layout_marginBottom="16dp">
-
-                            <androidx.cardview.widget.CardView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:layout_alignParentLeft="true"
-                                app:cardCornerRadius="50dp"
-                                app:cardElevation="0dp">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:drawableStart="@drawable/ic_launcher_background" />
-                            </androidx.cardview.widget.CardView>
-
-                            <androidx.cardview.widget.CardView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:layout_centerHorizontal="true"
-                                app:cardCornerRadius="50dp"
-                                app:cardElevation="0dp">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:drawableStart="@drawable/ic_launcher_background" />
-                            </androidx.cardview.widget.CardView>
-
-                            <androidx.cardview.widget.CardView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:layout_alignParentRight="true"
-                                app:cardCornerRadius="50dp"
-                                app:cardElevation="0dp">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:drawableStart="@drawable/ic_launcher_background" />
-                            </androidx.cardview.widget.CardView>
-                        </RelativeLayout>
-
-
-                        <RelativeLayout
-                            android:id="@+id/linearLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="120dp"
-                            android:layout_below="@+id/txts_pham"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="17dp"
-                            android:layout_marginRight="16dp">
-                            <!--IMG 1-->
-                <RelativeLayout
-                    android:id="@+id/relativeLayout"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true">
-
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:background="@color/colorPrimaryDark"
-                        android:contentDescription="@string/text_nike" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/imageView"
-                        android:gravity="center_horizontal"
-                        android:text="@string/text_nike" />
-
-                </RelativeLayout>
-                <!--IMG 2-->
-                <RelativeLayout
-                    android:id="@+id/relativeLayout2"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true">
-
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:background="@color/colorPrimaryDark"
-                        android:contentDescription="@string/text_nike" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/imageView2"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:text="@string/text_nike" />
-
-                </RelativeLayout>
-
-                            IMG 3
-                <RelativeLayout
-                    android:id="@+id/relativeLayout3"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true">
-
-                    <!--90dp = 210px-->
-                    <ImageView
-                        android:id="@+id/imageView3"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:background="@color/colorPrimaryDark"
-                        android:contentDescription="@string/text_nike" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/imageView3"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:text="@string/text_nike" />
-
-                </RelativeLayout>
-            </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_Logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/videoView" />
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_below="@+id/cardView_sp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="25dp"
+                android:layout_height="150dp"
+                android:layout_below="@+id/recyclerView_Logo"
+                android:layout_marginBottom="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/txts_pham"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/cardView_sp"
-                android:layout_marginTop="16dp"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/viewPager"
                 android:gravity="center_horizontal|center_vertical"
                 android:text="@string/txt_sp"
                 android:textSize="20sp" />
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txts_pham">
 
-
-
-                        <RelativeLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="wrap_content"
-                android:layout_height="120dp"
-                android:layout_below="@+id/linearLayout"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="17dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="70dp">
                 <!--IMG 1-->
                 <RelativeLayout
-                    android:id="@+id/relativeLayout4"
-                    android:layout_width="100dp"
+                    android:id="@+id/relativeLayout"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true">
+                    android:layout_alignParentLeft="true"
+
+                    android:layout_marginLeft="19dp"
+                    android:layout_marginTop="17dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="100dp">
 
                     <ImageView
-                        android:id="@+id/imageView4"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:id="@+id/imageView"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
                         android:background="@color/colorPrimaryDark"
                         android:contentDescription="@string/text_nike" />
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/imageView4"
-                        android:gravity="center_horizontal"
-                        android:text="@string/text_nike" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imageView"
+                        android:text="@string/text_nike"
+                        android:layout_centerHorizontal="true"/>
 
                 </RelativeLayout>
-                <!--IMG 2-->
+                <!--IMG 2 : vi du-->
                 <RelativeLayout
-                    android:id="@+id/relativeLayout5"
-                    android:layout_width="100dp"
+                    android:id="@+id/relativeLayout2"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true">
+                    android:layout_alignParentLeft="true"
+
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="17dp"
+                    android:layout_marginEnd="19dp"
+                    android:layout_marginBottom="100dp"
+                    android:layout_gravity="right">
 
                     <ImageView
-                        android:id="@+id/imageView5"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:id="@+id/imageView2"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
                         android:background="@color/colorPrimaryDark"
                         android:contentDescription="@string/text_nike" />
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/imageView5"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:text="@string/text_nike" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imageView2"
+                        android:text="@string/text_nike"
+                        android:layout_centerHorizontal="true"/>
 
                 </RelativeLayout>
-
-                <!--            IMG 3-->
-                <RelativeLayout
-                    android:id="@+id/relativeLayout6"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true">
-
-                    <!--90dp = 210px-->
-                    <ImageView
-                        android:id="@+id/imageView6"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:background="@color/colorPrimaryDark"
-                        android:contentDescription="@string/text_nike" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/imageView6"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:text="@string/text_nike" />
-
-                </RelativeLayout>
-            </RelativeLayout>
+            </GridLayout>
         </RelativeLayout>
     </ScrollView>
 </FrameLayout>
@@ -295,7 +146,8 @@
         app:headerLayout="@layout/nav_header"
         android:id="@+id/nv">
     </com.google.android.material.navigation.NavigationView>
-   <RelativeLayout
+
+    <RelativeLayout
            android:layout_width="match_parent"
            android:layout_height="70dp"
            android:gravity="bottom"
@@ -307,7 +159,6 @@
             app:itemBackground="@color/colorPrimaryDark"
             app:itemIconTint="@color/nav_items"
             app:itemTextColor="@color/nav_items"
-            app:menu="@menu/navbottom_items"
-            />
+            app:menu="@menu/navbottom_items" />
    </RelativeLayout>
 </androidx.drawerlayout.widget.DrawerLayout>
