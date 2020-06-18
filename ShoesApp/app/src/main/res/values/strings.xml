@@ -27,6 +27,18 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
 
+    <string name="tensanpham">ALPHABOOST</string>
+    <string name="gia">3.500.000đ</string>
+    <string name="chitietsanpham">Chi tiết sản phẩm</string>
+    <string name="bieudokichco">Biểu đồ kích cỡ</string>
+    <string name="soluongsp">Số lượng</string>
+    <string name="thongtinsanpham">- Mã sản phẩm: EE4164\n- Giày ôm chân, có dây buộc.\n- Thân giày bằng vải lưới.\n- Nhẹ và thoáng khí.\n- Giày nâng đỡ dành cho rèn luyện tốc độ.\n- Đế giữa công nghệ Boost đàn hồi.\n- Đế ngoài cao su Continental.\n- Màu sản phẩm: Signal Green / Signal Green / Signal Green.</string>
+    <string name="size7uk">7 UK</string>
+    <string name="size8uk">8 UK</string>
+    <string name="size9uk">9 UK</string>
+    <string name="size10uk">10 UK</string>
+    <string name="dathang">Thêm vào giỏ hàng</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

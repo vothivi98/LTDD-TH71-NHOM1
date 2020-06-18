@@ -1,72 +1,90 @@
 package com.example.myadapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.model.Products;
+import com.example.shoesapp.InfoProductsActivity;
 import com.example.shoesapp.R;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class ProductAdapter extends BaseAdapter {
-    ArrayList<Products> arrayProducts;
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder>{
+    private static final String TAG = "RecyclerViewAdapter";
+
+    ArrayList<Products> arrayProduct;
     Context context;
-    public  ProductAdapter(ArrayList<Products> arr, Context context){
-        this.arrayProducts = arr;
+
+
+    public ProductAdapter(Context context, ArrayList<Products> arrayProduct) {
+        this.arrayProduct = arrayProduct;
         this.context = context;
     }
-    //đổ hết dữ liệu trong mảng ra
+
+    @NonNull
     @Override
-    public int getCount() {
-        return arrayProducts.size();
-    }
-    //Laasytuwfng thuộc tính trong bảng
-    @Override
-    public Object getItem(int position) {
-        return arrayProducts.get(position);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_product, null);
+        return new ViewHolder(view);
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-    public class ViewHolder {
-        TextView name;
-        ImageView img;
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        final Products product = arrayProduct.get(position);
+
+
+        DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
+        holder.priceProduct.setText("Giá: " + decimalFormat.format(product.getPrice()) + "Đ");
+        holder.nameProduct.setText(product.getProductName());
+        Picasso.with(context).load(product.getImgProduct())
+                .into(holder.imgProduct); // nếu thành công thì gán ảnh vào
+
+        holder.product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, InfoProductsActivity.class);
+                intent.putExtra("productInfor", product);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
+
+
     }
 
-        @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
-        if(convertView == null) // view rỗng
-        {
-            viewHolder = new ViewHolder();
-            //get service là layout ra
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-            //gán view vào
-            convertView = inflater.inflate(R.layout.row_product,null);
-            // gán id cho các thuộc tính layout
-            viewHolder.img = (ImageView) convertView.findViewById(R.id.imgProduct);
-            viewHolder.name = (TextView) convertView.findViewById(R.id.nameProduct);
-            //gán ID vào trong viewHolder
-            convertView.setTag(viewHolder);
-        }else {
-            viewHolder = (ViewHolder) convertView.getTag();// lấy lại tag đã gán vào
+    @Override
+    public int getItemCount() {
+        return arrayProduct.size();
+    }
 
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView imgProduct;
+        TextView nameProduct;
+        TextView priceProduct;
+        LinearLayout product;
+
+        public ViewHolder(View itemview) {
+            super(itemview);
+            imgProduct = itemview.findViewById(R.id.imgProduct);
+            nameProduct = itemview.findViewById(R.id.nameProduct);
+            priceProduct = itemview.findViewById(R.id.priceProduct);
+            product = itemview.findViewById(R.id.product);
         }
-        //lấy dữ liệu ra từ mảng
-        Products product = (Products) getItem(position);
-        viewHolder.name.setText(product.getProductName());
-        //đọc đường dẫn url từ internet
-        Picasso.with(context).load(product.getImgProduct())// hình bị lỗi k load dc
-                .into(viewHolder.img); // nếu thành cồn thì gán ảnh vào
-
-        return convertView;
     }
 }

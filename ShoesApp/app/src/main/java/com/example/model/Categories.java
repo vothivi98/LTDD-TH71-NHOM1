@@ -2,7 +2,7 @@ package com.example.model;
 
 public class Categories {
 
-    private String cateID;
+    private int cateId;
     private String cateName;
     private String imgCate;
 
@@ -10,14 +10,15 @@ public class Categories {
 
     }
 
-    public Categories(String cateID, String cateName, String imgCate) {
-        this.cateID = cateID;
+    public Categories(int cateId, String cateName, String imgCate) {
+        this.cateId = cateId;
         this.cateName = cateName;
         this.imgCate = imgCate;
     }
 
-    public void setCateID(String cateID) {
-        this.cateID = cateID;
+
+    public void setCateId(int cateId) {
+        this.cateId = cateId;
     }
 
     public void setCateName(String cateName) {
@@ -28,8 +29,8 @@ public class Categories {
         this.imgCate = imgCate;
     }
 
-    public String getCateID() {
-        return cateID;
+    public int getCateId() {
+        return cateId;
     }
 
     public String getCateName() {

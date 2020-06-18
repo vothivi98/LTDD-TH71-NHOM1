@@ -3,24 +3,25 @@ package com.example.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OrderDetail {
+public class    OrderDetail {
 
     private String orderId;
     private String productId;
-    private String discountId;
+
     private int price;
     private int quantity;
+    private String size;
 
     public OrderDetail() {
     }
 
-    public OrderDetail(String orderid, String productId, String discountId,
-                       int price, int quantity) {
+    public OrderDetail(String orderid, String productId,
+                       int price, int quantity, String size) {
         this.orderId = orderid;
         this.productId = productId;
-        this.discountId = discountId;
         this.price = price;
         this.quantity = quantity;
+        this.size = size;
     }
 
     // dùng để thêm dữ liệu hoặc cập nhật lên firebase
@@ -30,9 +31,16 @@ public class OrderDetail {
         result.put("price", price);
         result.put("productID", productId);
         result.put("quantity", quantity);
-        result.put("discountID", discountId);
-
+        result.put("size", size);
         return result;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public void setOrderId(String orderid) {
@@ -41,10 +49,6 @@ public class OrderDetail {
 
     public void setProductId(String productId) {
         this.productId = productId;
-    }
-
-    public void setDiscountId(String discountId) {
-        this.discountId = discountId;
     }
 
     public void setPrice(int price) {
@@ -63,9 +67,6 @@ public class OrderDetail {
         return productId;
     }
 
-    public String getDiscountId() {
-        return discountId;
-    }
 
     public int getPrice() {
         return price;

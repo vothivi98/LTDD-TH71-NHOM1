@@ -1,62 +1,116 @@
 package com.example.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Discounts {
-    private String id;
+public class Discounts implements Serializable{
+    private String discountId;
     private String title;
-    private Date startDate;
-    private Date endDate;
-    private double discount;
+    private String startDate;
+    private String endDate;
+    private double percentage;
+    private String description;
+    private int maxQuantity;
+    private int minQuantity;
+    private String image;
+    private int cateId;
+
 
     public Discounts() {
     }
 
-    public Discounts(String id, String title, Date startDate, Date endDate, double discount) {
-        this.id = id;
+    public Discounts(String discountId, String title, String startDate, String endDate,
+                     double percentage, String description, int maxQuantity, int minQuantity,
+                     int cateId, String image) {
+        this.discountId = discountId;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.discount = discount;
+        this.percentage = percentage;
+        this.description = description;
+        this.maxQuantity = maxQuantity;
+        this.minQuantity = minQuantity;
+        this.cateId = cateId;
+        this.image = image;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getImage() {
+        return image;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public String getDiscountId() {
+        return discountId;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setDiscount(double discount) {
-        this.discount = discount;
-    }
-
-    public String getId() {
-        return id;
+    public void setDiscountId(String discountId) {
+        this.discountId = discountId;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public Date getStartDate() {
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
         return endDate;
     }
 
-    public double getDiscount() {
-        return discount;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getMaxQuantity() {
+        return maxQuantity;
+    }
+
+    public void setMaxQuantity(int maxQuantity) {
+        this.maxQuantity = maxQuantity;
+    }
+
+    public int getMinQuantity() {
+        return minQuantity;
+    }
+
+    public void setMinQuantity(int minQuantity) {
+        this.minQuantity = minQuantity;
+    }
+
+    public int getCateId() {
+        return cateId;
+    }
+
+    public void setCateId(int cateId) {
+        this.cateId = cateId;
     }
 }

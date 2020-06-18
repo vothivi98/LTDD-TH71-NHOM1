@@ -1,88 +1,114 @@
 package com.example.shoesapp;
 
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.FrameLayout;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.VideoView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.VideoView;
+
+import com.example.model.Cart;
+import com.example.model.Categories;
+import com.example.model.Discounts;
 import com.example.model.Products;
 import com.example.myadapter.ImageAdapter;
+import com.example.myadapter.ProductAdapter;
 import com.example.myadapter.RecyclerViewAdapter;
+import com.example.ultil.LoadingDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-public class MainActivity<ProductAdapter> extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClickListener,
+                NavigationView.OnNavigationItemSelectedListener{
     String id = "";
     String name = "";
+    String cateId = "";
+    String descripiton = "";
+    int price = 0;
     String img = "";
+    int index = 0;
+    NavigationView navView;
     VideoView mvideoView;
+    View headerview;
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
     private NavigationView nv;
     private BottomNavigationView mainNav;
     private FrameLayout mainFrame;
-    private ListView lv;
-    private ArrayList<Integer> imageURLs = new ArrayList<>();
+    private SearchView searchView;
+    private ImageView imgThongBao;
+    private TextView txtThongBao, tenKH, emailKH;
+    ArrayList<Categories> imageURLs;
     ArrayList<Products> arrayProduct;
+    ArrayList<Discounts> arrayImageDiscount;
+    ImageAdapter adapter;
+//    NavigationView navView;
     ProductAdapter productAdapter;
-
+    RecyclerViewAdapter recyclerViewAdapter;
+    RecyclerView recyclerView, listProduct;
+    ViewPager mViewPager;
+    String co = "", login = "";
+//    View headerview;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+    private DatabaseReference mData;
+    private DatabaseReference mReference;
+    private ProgressDialog dg;
+    LoadingDialog loadingDialog;
+    public static  ArrayList<Cart> arrayCart;
+    private StorageReference storageReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //fullscreen
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-
-        dl = (DrawerLayout) findViewById(R.id.activity_main);
+        mapping();
+        // đóng và mở menu
         t = new ActionBarDrawerToggle(this, dl, R.string.Open, R.string.Close);
 
         dl.addDrawerListener(t);
         t.syncState();
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        nv.setNavigationItemSelectedListener(this);
 
-        nv = (NavigationView) findViewById(R.id.nv);
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.trangchu:
-                        Toast.makeText(MainActivity.this, "Trang chủ", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.taikhoan:
-                        Toast.makeText(MainActivity.this, "Tài khoản", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.giohang:
-                        Toast.makeText(MainActivity.this, "Giỏ hàng", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.dangxuat:
-                        Toast.makeText(MainActivity.this, "Đăng xuất", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        return true;
-                }
-                return true;
-            }
-        });
+        //
 
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        ImageAdapter adapter = new ImageAdapter(this);
-        mViewPager.setAdapter(adapter);
 
         //load video
-        mvideoView = (VideoView) findViewById(R.id.videoView);
         Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.gas);
         try {
             mvideoView.setVideoURI(uri);
@@ -90,173 +116,321 @@ public class MainActivity<ProductAdapter> extends AppCompatActivity {
             System.out.println("Loi khong load duoc video" + techmaster1);
         }
         mvideoView.start();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            co = bundle.getString("co");
+            login = bundle.getString("login");
+            if (co != null) {
+                loadingDialog = new LoadingDialog(this);
+                loadingDialog.startLoadingDialog();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //hide the dialog after 4550 milliseconds
+                        loadingDialog.dismissDialog();
+                    }
+                }, 4530);
+            }
+            if(login != null){
+                mUser = FirebaseAuth.getInstance().getCurrentUser();
+                mAuth =FirebaseAuth.getInstance();
+                mReference = FirebaseDatabase.getInstance().getReference("UserInfor");
+                loadInforUser();
+            }
+        }
 
-        //bottom navigation
+        //get cate
+        mData.child("Category").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dt : dataSnapshot.getChildren()){
+                    Categories cate = dt.getValue(Categories.class);
+                    imageURLs.add(cate);
+                    recyclerViewAdapter.notifyDataSetChanged();
+                }
+            }
 
-        mainNav = (BottomNavigationView) findViewById(R.id.main_nav);
-        mainNav.setOnNavigationItemSelectedListener(navListener);
-        mainNav.clearFocus();
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "Error:" +
+                        databaseError.getMessage() , Toast.LENGTH_SHORT).show();
+            }
+        });
+        //get product
+        mData.child("Products").limitToLast(6).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dt : dataSnapshot.getChildren()){
 
-//        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new HomeActivity()).commit();
-        //
-//        arrayProduct = new ArrayList<>();
-//
-//        //lv = (ListView) findViewById(R.id.lv);
-//
-//        arrayProduct = new ArrayList<>();
-//        //khởi tạo bảng vẽ
-//        productAdapter = new ProductAdapter(arrayProduct, getApplicationContext());
-//        lv.setAdapter(productAdapter);
-        //getDAta();
-       // postData();
+                    Products pro = dt.getValue(Products.class);
+                    arrayProduct.add(pro);
+                    productAdapter.notifyDataSetChanged();
+                }
+                checkData();
+            }
 
-        listImageLogo();
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "Error:" +
+                        databaseError.getMessage() , Toast.LENGTH_SHORT).show();
+            }
+        });
+        if(searchView != null){
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    search(newText);
+                    return true;
+                }
+            });
+        }
+
+
+        headerview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mUser != null) {
+                    // User is signed in
+                    Intent intent = new Intent(MainActivity.this, AccountActivity.class);
+                    startActivity(intent);
+                } else {
+                    // No user is signed in
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+
+            }
+        });
+        loadImageDiscount();
+    }
+
+    public void loadImageDiscount() {
+        mData.child("Discounts").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dt : dataSnapshot.getChildren()){
+                    Discounts disc = dt.getValue(Discounts.class);
+                    arrayImageDiscount.add(disc);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "Error:" +
+                        databaseError.getMessage() , Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void checkData() {
+
+        if(arrayProduct.size() > 0){ // ẩn
+            txtThongBao.setVisibility(View.INVISIBLE);
+            imgThongBao.setVisibility(View.INVISIBLE);
+            listProduct.setVisibility(View.VISIBLE);
+        }else {
+            txtThongBao.setText("Không tìm thấy sản phẩm nào!!");
+            txtThongBao.setVisibility(View.VISIBLE);
+            imgThongBao.setVisibility(View.VISIBLE);
+            listProduct.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void search(String str) {
+        ArrayList<Products> arraySearch = new ArrayList<>();
+        for(Products p : arrayProduct){
+            if(p.getProductName().toLowerCase().contains(str.toLowerCase())){
+                arraySearch.add(p);
+            }
+        }
+
+        if(arraySearch.size() > 0){
+            txtThongBao.setVisibility(View.INVISIBLE);//ẩn
+            imgThongBao.setVisibility(View.INVISIBLE);
+            listProduct.setVisibility(View.VISIBLE);
+            ProductAdapter allProAdapter = new ProductAdapter(getApplicationContext(), arraySearch);
+            listProduct.setHasFixedSize(true);
+            listProduct.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+            listProduct.setAdapter(allProAdapter);
+        }else {
+            txtThongBao.setText("Không tìm thấy sản phẩm nào!!");
+            txtThongBao.setVisibility(View.VISIBLE);
+            imgThongBao.setVisibility(View.VISIBLE);
+            listProduct.setVisibility(View.INVISIBLE);
+        }
+    }
+    //Giỏ hàng
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.navbottom_items,menu);
+        return true;
+    }
+
+    public void mapping() {
+        mData = FirebaseDatabase.getInstance().getReference();
+        dl = (DrawerLayout) findViewById(R.id.activity_main);
+        nv = (NavigationView) findViewById(R.id.nv);
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mvideoView = (VideoView) findViewById(R.id.videoView);
+        searchView = (SearchView)findViewById(R.id.cardSearch);
+        txtThongBao = findViewById(R.id.txtThongBao);
+        imgThongBao = findViewById(R.id.imgThongBao);
+        //Discount
+        arrayImageDiscount = new ArrayList<>();
+        adapter = new ImageAdapter(this, arrayImageDiscount);
+        mViewPager.setAdapter(adapter);
+
+        //cate
+        imageURLs = new ArrayList<>();
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView_Logo);
+        recyclerViewAdapter = new RecyclerViewAdapter(this, imageURLs, this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(recyclerViewAdapter);
+        //product
+        arrayProduct = new ArrayList<>();
+        listProduct = (RecyclerView) findViewById(R.id.listProduct);
+        productAdapter = new ProductAdapter(getApplicationContext(), arrayProduct);
+        listProduct.setHasFixedSize(true);
+        listProduct.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        listProduct.setAdapter(productAdapter);
+        dg = new ProgressDialog(this);
+        navView = (NavigationView) findViewById(R.id.nv);
+        headerview = navView.getHeaderView(0);
+        tenKH = (TextView)headerview.findViewById(R.id.tenKH);
+        emailKH = (TextView) headerview.findViewById(R.id.emailKH);
+        if(arrayCart != null){
+
+        }else {
+            arrayCart = new ArrayList<>();
+        }
+
+
+    }
+
+    public void loadInforUser(){
+        if(mUser != null) {
+            String currentUserID = mUser.getUid(); //Do what you need to do with the id
+            mReference.child(currentUserID).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot)
+                {
+                    if(dataSnapshot.exists())
+                    {
+                        if(dataSnapshot.hasChild("fullName"))
+                        {
+                            String fullname = dataSnapshot.child("fullName").getValue().toString();
+                            tenKH.setText(fullname);
+                        }
+                        if(dataSnapshot.hasChild("emailUser"))
+                        {
+                            String e = dataSnapshot.child("emailUser").getValue().toString();
+//                            Picasso.get().load(image).placeholder(R.drawable.profile).into(navProfileImage);
+                            emailKH.setText(e);
+                        }
+                        else
+                        {
+                            Toast.makeText(MainActivity.this, "Thông tin không tồn tại...", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //load video
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.gas);
+        try {
+            mvideoView.setVideoURI(uri);
+        } catch (NullPointerException techmaster1) {
+            System.out.println("Loi khong load duoc video" + techmaster1);
+        }
+        mvideoView.start();
+    }
+
+    @Override
+    public void onItemClickListener(int position) {
+
+        Intent intent = new Intent(this, CategoryActivity.class);
+        intent.putExtra("cateId", imageURLs.get(position).getCateId());
+        startActivity(intent);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (t.onOptionsItemSelected(item))
+        int id = item.getItemId();
+        //Hành động khi click vào giỏ hàng
+        if(t.onOptionsItemSelected(item))
             return true;
-        return super.onOptionsItemSelected(item);
-    }
+        switch (id){
+            case R.id.nav_cart:
+                //đóng dl
+                dl.closeDrawer(Gravity.LEFT, false);
+                //hiện giỏ hàng
+                Intent intents = new Intent(this, OrderActivity.class);
+                startActivity(intents);
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            Fragment selectedFragment = null;
-
-            switch (menuItem.getItemId()) {
-                case R.id.nav_home:
-                    selectedFragment = new HomeActivity();
-                    break;
-                case R.id.nav_cart:
-                    selectedFragment = new OrderActivity();
-                    break;
-                case R.id.nav_account:
-                    selectedFragment = new AccountActivity();
-                    break;
-            }
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, selectedFragment).commit();
-
-            return false;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-    };
-
-//    public void getDAta() {
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//        String url = "https://shoesdatabase-b8db9.firebaseio.com/Products.json";
-//        //tạo hàm giúp thực hiện phương thức gửi lên server
-//        //đọc dữ liệu json nhanh gọn hơn
-//        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-//                Request.Method.GET, // phương thức
-//                url,
-//                null
-//                , new Response.Listener<JSONArray>() {
-//            @Override
-//            // Dữ liệu truyền về response
-//            public void onResponse(JSONArray response) {
-//                if (response != null) // nếu dữ liệu có mới đọc về
-//                {
-//                    for (int j = 0; j < response.length(); j++) {
-//                        try {
-//                            JSONObject jsonObject = response.getJSONObject(j); //jsonArray == response
-//                            //đọc dữ liệu gán vs tên cột trong csdl
-//                            id = jsonObject.getString("productID");
-//                            name = jsonObject.getString("productName");
-//                            img = jsonObject.getString("imgProduct");
-//                            arrayProduct.add(new Products(id, name, img));
-//                            //update lại dữ liệu mới
-//                            productAdapter.notifyDataSetChanged();
-////
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }
-//        }, new Response.ErrorListener() { // lỗi
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e("Lỗi", error.toString());
-//            }
-//        });
-//        //gửi lên server thực hiện yêu cầu
-//        queue.add(jsonArrayRequest);
-//    }
-
-//    public void postData() {
-//        RequestQueue requestQueue = Volley.newRequestQueue(this);
-//        String url = "https://shoesdatabase-b8db9.firebaseio.com/Products.json";
-//        Products pro = new Products("5", "1", 25000,
-//                "https://i.picsum.photos/id/704/200/300.jpg?blur=5",
-//                "Nike2", "gdfgdf");
-//        Map<String, Object> productMap = pro.toMap();
-//
-//        JSONObject jsonObject = new JSONObject(productMap);
-//        final String requestBody = jsonObject.toString();
-//
-//        StringRequest stringRequest = new StringRequest(
-//                Request.Method.POST,
-//                url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.i("VOLLEY", response);
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e("VOLLEY", error.toString());
-//            }
-//        }) {
-//            @Override
-//            public String getBodyContentType() {
-//                return "application/json; charset=utf-8";
-//            }
-//
-//            @Override
-//            public byte[] getBody() throws AuthFailureError {
-//                try {
-//                    return requestBody == null ? null : requestBody.getBytes("utf-8");
-//                } catch (UnsupportedEncodingException uee) {
-//                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
-//                            requestBody, "utf-8");
-//                    return null;
-//                }
-//            }
-//
-//            @Override
-//            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-//                String responseString = "";
-//                if (response != null) {
-//                    responseString = String.valueOf(response.statusCode);
-//                    // can get more details such as response.headers
-//                }
-//                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-//            }
-//        };
-//
-//        requestQueue.add(stringRequest);
-//    }
-
-    private void listImageLogo() {
-
-        imageURLs.add(R.drawable.round_lens_black_48);
-        imageURLs.add(R.drawable.round_lens_black_48);
-        imageURLs.add(R.drawable.round_lens_black_48);
-        imageURLs.add(R.drawable.round_lens_black_48);
-        imageURLs.add(R.drawable.round_lens_black_48);
-        imageURLs.add(R.drawable.round_lens_black_48);
-
-        initRecyclerView();
     }
 
-    private void initRecyclerView(){
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        androidx.recyclerview.widget.RecyclerView recyclerView = findViewById(R.id.recyclerView_Logo);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        RecyclerViewAdapter adapter  = new RecyclerViewAdapter(this, imageURLs);
-        recyclerView.setAdapter(adapter);
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        int id = menuItem.getItemId();
+        switch (id) {
+            case R.id.donHang:
+                Toast.makeText(MainActivity.this, "Sản phẩm đã mua",
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.soDiaChi:
+                Toast.makeText(MainActivity.this, "Sổ địa chỉ",
+                        Toast.LENGTH_SHORT).show();
+
+                break;
+            case R.id.order:
+                Toast.makeText(MainActivity.this, "Đơn hàng đang chờ vận chuyển",
+                        Toast.LENGTH_SHORT).show();
+
+                break;
+            case R.id.dangxuat:
+                dg.setMessage("Đang đăng xuất....");
+                dg.show();
+                if (mUser != null) {
+                    mAuth.signOut();
+                    MainActivity.arrayCart.clear();
+//                    Intent intent1 = new Intent(MainActivity.this, LoginActivity.class);
+//                    startActivity(intent1);
+//
+                    finish();
+
+                } else {
+                    // No user is signed in
+                    dg.dismiss();
+                    Toast.makeText(MainActivity.this, "Bạn chưa đăng nhập!", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+        }
+        return false;
     }
 }
+

@@ -7,29 +7,38 @@ import java.util.Map;
 public class Orders {
     private String userId;
     private String orderId;
-    private Date orderDate;
-    private int total;
-
+    private String orderDate;
+    private String discountId;
+    private double total;
     public Orders() {
     }
 
-    public Orders(String userId, String orderId, Date orderDate, int total) {
+    public Orders(String userId, String orderId, String orderDate, String discountId, double total) {
         this.userId = userId;
         this.orderId = orderId;
         this.orderDate = orderDate;
+        this.discountId = discountId;
         this.total = total;
     }
 
-    // dùng để thêm dữ liệu hoặc cập nhật lên firebase
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("orderDate", orderDate);
-        result.put("orderID", orderId);
-        result.put("total", total);
-        result.put("userID", userId);
-
-        return result;
+    public double getTotal() {
+        return total;
     }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public String getDiscountId() {
+        return discountId;
+    }
+
+    public void setDiscountId(String discountId) {
+        this.discountId = discountId;
+    }
+
+    // dùng để thêm dữ liệu hoặc cập nhật lên firebase
+
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -39,12 +48,8 @@ public class Orders {
         this.orderId = orderId;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
     }
 
     public String getUserId() {
@@ -55,11 +60,7 @@ public class Orders {
         return orderId;
     }
 
-    public Date getOrderDate() {
+    public String getOrderDate() {
         return orderDate;
-    }
-
-    public int getTotal() {
-        return total;
     }
 }

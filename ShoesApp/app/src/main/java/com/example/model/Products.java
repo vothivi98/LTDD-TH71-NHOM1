@@ -1,11 +1,12 @@
 package com.example.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Products {
+public class Products implements Serializable {
     private String productId;
-    private String cateID;
+    private int cateId;
     private int price;
     private String imgProduct;
     private String productName;
@@ -15,24 +16,24 @@ public class Products {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Products(String productId, String cateID, int price, String imgProduct,
+    public Products(String productId, int cateId, int price, String imgProduct,
                     String productName, String description) {
         this.productId = productId;
-        this.cateID = cateID;
+        this.cateId = cateId;
         this.price = price;
         this.imgProduct = imgProduct;
         this.productName = productName;
         this.description = description;
     }
-    public Products(String productId, String productName, String imgProduct){
-        this.productId = productId;
+    public Products(int price, String productName, String imgProduct){
+        this.price = price;
         this.productName = productName;
         this.imgProduct = imgProduct;
     }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("cateID", cateID);
+        result.put("cateId", cateId);
         result.put("description", description);
         result.put("imgProduct", imgProduct);
         result.put("price", price);
@@ -46,8 +47,8 @@ public class Products {
         return productId;
     }
 
-    public String getCateID() {
-        return cateID;
+    public int getCateId() {
+        return cateId;
     }
 
     public int getPrice() {
@@ -70,8 +71,8 @@ public class Products {
         this.productId = productId;
     }
 
-    public void setCateID(String cateID) {
-        this.cateID = cateID;
+    public void setCateId(int cateId) {
+        this.cateId = cateId;
     }
 
     public void setPrice(int price) {

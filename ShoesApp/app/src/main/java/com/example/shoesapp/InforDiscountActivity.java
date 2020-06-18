@@ -1,0 +1,94 @@
+package com.example.shoesapp;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.model.Discounts;
+import com.example.model.Products;
+import com.squareup.picasso.Picasso;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class InforDiscountActivity extends AppCompatActivity {
+    Discounts discounts;
+    TextView txtDescription, txtDiscountId, txtStartDate, endDate;
+    Button btnSuDung;
+    ImageView image2;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_infor_discount);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Discount");
+
+        mapping();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            discounts = (Discounts) bundle.getSerializable("discountInfor");
+            txtStartDate.setText(discounts.getStartDate());
+            txtDiscountId.setText(discounts.getDiscountId());
+            txtDescription.setText(discounts.getDescription());
+            endDate.setText(discounts.getEndDate());
+            Picasso.with(getApplicationContext()).load(discounts.getImage())
+                    .into(image2);
+
+        }
+
+        btnSuDung.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                try {
+                    if(!df.parse(discounts.getStartDate()).before(new Date())){ // chưa tới ngày áp dụng khuyến mãi
+                        Toast.makeText(InforDiscountActivity.this, "Chưa tới ngày áp dụng mã.Vui lòng chọn mã khác", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), DiscountsActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getApplicationContext().startActivity(intent);
+                    }else {
+                        Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                        intent.putExtra("discounts", discounts);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getApplicationContext().startActivity(intent);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+    private void mapping() {
+        txtDiscountId = findViewById(R.id.txtDiscountId);
+        txtStartDate = findViewById(R.id.startDate);
+        endDate = findViewById(R.id.endDate);
+        btnSuDung = findViewById(R.id.btnSuDung);
+        txtDescription = findViewById(R.id.txtDescription);
+        image2 = findViewById(R.id.image2);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == android.R.id.home)
+        {
+            this.finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+}
