@@ -13,8 +13,7 @@ import android.widget.TextView;
 
 public class StartScreenActivity extends AppCompatActivity {
     Animation topAnim, bottomAnim;
-    ImageView img;
-    TextView txt1, txt2;
+    ImageView img, img2;
     private static int splash_sreen = 3000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,18 +26,19 @@ public class StartScreenActivity extends AppCompatActivity {
         bottomAnim = AnimationUtils.loadAnimation(this, R.anim.bottom_animation);
 
         img = findViewById(R.id.logoStart);
-        txt1 = findViewById(R.id.txt1Start);
-        txt2 = findViewById(R.id.txt2Start);
+        img2 = findViewById(R.id.logoStart2);
 
         img.setAnimation(topAnim);
-        txt1.setAnimation(bottomAnim);
-        txt2.setAnimation(bottomAnim);
+        img2.setAnimation(bottomAnim);
+
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Intent callMainAcc = new Intent(getApplicationContext(), MainActivity.class);
                 callMainAcc.putExtra("co", "Y");
+                callMainAcc.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // để clear acivity khi back
+                callMainAcc.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 callMainAcc.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(callMainAcc);
                 finish();

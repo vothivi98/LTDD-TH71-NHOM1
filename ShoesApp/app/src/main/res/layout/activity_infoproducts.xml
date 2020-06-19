@@ -180,17 +180,37 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:gravity="bottom">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
         <Button
             android:id="@+id/btn_dathang"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:text="@string/dathang"
             android:textAllCaps="true"
             android:textColor="@android:color/black"
             android:background="@drawable/ripple"
-            android:textSize="19sp"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
-            android:drawableEnd="@drawable/baseline_arrow_right_alt_black_24dp"/>
+            android:textSize="18sp"
+            android:drawableEnd="@drawable/ic_shopping_cart_black_24dp"
+            android:paddingLeft="10dp"
+            android:drawablePadding="10dp"
+            />
+        <Button
+            android:id="@+id/btn_muangay"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:text="@string/txtmuangay"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:background="@drawable/ripple2"
+            android:textSize="18sp"
+            android:drawableEnd="@drawable/baseline_arrow_right_alt_white_24dp"
+
+            android:paddingLeft="10dp"
+            android:paddingRight="5dp"
+            android:drawablePadding="10dp"/>
+    </LinearLayout>
     </RelativeLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

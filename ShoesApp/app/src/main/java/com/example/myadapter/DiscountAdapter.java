@@ -48,6 +48,7 @@ public class DiscountAdapter extends RecyclerView.Adapter<DiscountAdapter.ViewHo
         holder.lnDiscount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(context, InforDiscountActivity.class);
                 intent.putExtra("discountInfor", discounts);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

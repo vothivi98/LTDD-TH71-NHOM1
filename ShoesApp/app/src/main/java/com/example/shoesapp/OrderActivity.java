@@ -9,9 +9,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.style.StrikethroughSpan;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,6 +30,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -40,6 +45,7 @@ import com.example.model.Orders;
 import com.example.model.Products;
 import com.example.myadapter.CartAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,17 +64,19 @@ public class OrderActivity extends AppCompatActivity {
 
     ListView lvOrder;
     public  static TextView txtTongTien;
-    TextView txtThongbao;
+    TextView txtThongbao, txtTienGiamGia, txtmagiamgia1, txtFast;
     Button btnMuaHang, btnKhong, btnCo, btnChonMa, btnXoa;
     ImageView iconGioHang;
     EditText txtGiamGia;
     CartAdapter cartAdapter;
     Dialog dialog;
-    Discounts discount1 = null;
+    public  static Discounts discount1 = null;
     private DatabaseReference mData;
     int tongtienFinal = 0;
     static int total;
     boolean flag = false;
+    String discountId2 = "0";
+    double totalFinal = total;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -88,23 +96,24 @@ public class OrderActivity extends AppCompatActivity {
             discount1 = (Discounts) bundle.getSerializable("discounts");
             btnChonMa.setText(discount1.getDiscountId());
             flag = true;
+
+
         }
 
-        if(flag){
-            btnXoa.setVisibility(View.VISIBLE);
-        }
+
         eventUltil();
         checkData();
         cactchOnItemListView();
 
         orderProducts();
-
+        setDiscount();
         btnChonMa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), DiscountsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(intent);
+                setDiscount();
             }
         });
         btnXoa.setOnClickListener(new View.OnClickListener() {
@@ -112,67 +121,122 @@ public class OrderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 btnChonMa.setText("Chọn mã giảm");
                 btnXoa.setVisibility(View.INVISIBLE);
+                txtTienGiamGia.setText("0Đ");
+            }
+        });
+        txtTongTien.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                setDiscount();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
-    public void orderProducts() {
 
+    public void setDiscount(){
+        // nếu có dùng mã giảm giá.... xét đk min, max
+        // dùng dùng mã giảm giá... mặc định 0
+        if(discount1 != null) {
+            int count1 = 0; // sl giày của hanxg đang mua
+            for(int i = 0; i < MainActivity.arrayCart.size(); i ++){
+                if(discount1.getCateId() == MainActivity.arrayCart.get(i).getCateId()
+                ){
+                    count1 += MainActivity.arrayCart.get(i).getQuantity();
+                }
+            }
+            if(discount1.getMinQuantity() <= count1 && count1 <= discount1.getMaxQuantity()){
+                discountId2 = discount1.getDiscountId();
+                totalFinal = total - (total * discount1.getPercentage());
+                DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
+                txtTienGiamGia.setText(decimalFormat.format(totalFinal) + " Đ");
+                // gạch bo giá cũ
+                SpannableStringBuilder ssb = new SpannableStringBuilder(txtTongTien.getText());
+                StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
+                ssb.setSpan(
+                        strikethroughSpan,0,ssb.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                flag = true;
+            }else {
+                flag = false;
+                btnChonMa.setText(":(");
+//                btnChonMa.setTooltipText("Không đủ điều kiện đề áp dụng mã giảm giá!");
+                discount1 = null;
+                InforDiscountActivity.discounts = null;
+                btnXoa.setVisibility(View.INVISIBLE);
+                txtTienGiamGia.setText("0Đ");
+            }
+        }
+    }
+
+    public void orderProducts() {
         btnMuaHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 1. Xét có sp trong giỏ hàng k
+                //2. xét đã đăng nhập hay chưa
                 if(MainActivity.arrayCart.size() > 0){
-                    String discountId2 = "0";
-                    double totalFinal = total;
-                    // nếu có dùng mã giảm giá.... xét đk min, max
-                    // dùng dùng mã giảm giá... mặc định 0
-                    if(discount1 != null) {
-                        int count = 0;
-                        for(int i = 0; i < MainActivity.arrayCart.size(); i ++){
-                            if(discount1.getCateId() == MainActivity.arrayCart.get(i).getCateId()){
-                                count += 1;
-                            }
-                        }
-                        if(discount1.getMinQuantity() <= count && count <= discount1.getMaxQuantity()){
-                            discountId2 = discount1.getDiscountId();
-                            totalFinal = total - (total * discount1.getPercentage());
-                            DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
-                            txtTongTien.setText(decimalFormat.format(totalFinal) + " Đ");
-                        }
-                    }
+//                    if(MainActivity.mUser!= null || LoginActivity.mUser != null){
+
 //                    Toast.makeText(OrderActivity.this,
 //                            "Dùng mã giảm giá", Toast.LENGTH_SHORT).show();
-                    //Intent intent = new Intent(getApplicationContext(), );
-                    //Lưu thông tin mua hàng lên firebase
-                    // Lưu vào bảng Orders
-                    String orderId = mData.child("Orders").push().getKey(); // lấy kye cua firbase
-                    String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-                    Orders od1= new Orders("123", orderId, currentDate, discountId2, totalFinal);
-                    mData.child("Orders").child(orderId).setValue(od1);
+                        //Intent intent = new Intent(getApplicationContext(), );
+                        //Lưu thông tin mua hàng lên firebase
+                        // Lưu vào bảng Orders
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        String orderId = mData.child("Orders").push().getKey(); // lấy kye cua firbase
+                        String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                        Orders od1= new Orders(userId, orderId, currentDate, discountId2, totalFinal);
+                        mData.child("Orders").child(orderId).setValue(od1);
 
 
-                    //Lưu vào bảng Order Detail
+                        //Lưu vào bảng Order Detail
 
-                    for (int i = 0; i < MainActivity.arrayCart.size(); i++){
-                        String productId = MainActivity.arrayCart.get(i).getProductId();
-                        int price1 = MainActivity.arrayCart.get(i).getPrice();
-                        int quantity = MainActivity.arrayCart.get(i).getQuantity();
-                        String size1 = MainActivity.arrayCart.get(i).getSize();
-                        OrderDetail orderDetail = new OrderDetail(orderId, productId,
-                                price1, quantity, size1);
-                        mData.child("Order Detail").push().setValue(orderDetail);
+                        for (int i = 0; i < MainActivity.arrayCart.size(); i++){
+                            String productId = MainActivity.arrayCart.get(i).getProductId();
+                            int price1 = MainActivity.arrayCart.get(i).getPrice();
+                            int quantity = MainActivity.arrayCart.get(i).getQuantity();
+                            String size1 = MainActivity.arrayCart.get(i).getSize();
+                            OrderDetail orderDetail = new OrderDetail(orderId, productId,
+                                    price1, quantity, size1);
+                            mData.child("Order Detail").push().setValue(orderDetail);
 
 
-                    }
+                        }
 
-                    Toast.makeText(OrderActivity.this,
-                            "Đặt hàng thành công!!!", Toast.LENGTH_SHORT).show();
-                    //xóa sp trong giỏ
-                    MainActivity.arrayCart.clear();
+                        Toast.makeText(OrderActivity.this,
+                                "Đặt hàng thành công!!!", Toast.LENGTH_SHORT).show();
+                        //xóa sp trong giỏ
+                        MainActivity.arrayCart.clear();
+                        cartAdapter.notifyDataSetChanged();
+                        eventUltil();
+                        //hiện thông báo k có sp
+                        txtThongbao.setVisibility(View.VISIBLE);
+                        iconGioHang.setVisibility(View.VISIBLE);
+                        txtFast.setVisibility(View.VISIBLE);
+                        lvOrder.setVisibility(View.VISIBLE);
+                        // ẩn btn xóa giảm giá
+                        btnXoa.setVisibility(View.INVISIBLE);
+                        btnChonMa.setText("Chọn mã giảm");
+                         // vô hiệu hóa btn chọn mã
+                        btnChonMa.setEnabled(false);
+//                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        startActivity(intent);
 
-                    cartAdapter.notifyDataSetChanged();
-                    eventUltil();
-                    Intent it = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(it);
+//                    }else {
+//                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                        startActivity(intent);
+//                    }
+
                 }else {
                     Toast.makeText(OrderActivity.this,
                     "Giỏ hàng của bạn chưa có sản phẩm để mua!!!", Toast.LENGTH_SHORT).show();
@@ -199,20 +263,23 @@ public class OrderActivity extends AppCompatActivity {
                         if(MainActivity.arrayCart.size() <= 0){
                             txtThongbao.setVisibility(View.VISIBLE);
                             iconGioHang.setVisibility(View.VISIBLE);
+                            txtFast.setVisibility(View.VISIBLE);
 
                         }else {
                             MainActivity.arrayCart.remove(position);
                             //cập nhật lại giỏ hàng
                             cartAdapter.notifyDataSetChanged();
                             eventUltil();
+                            setDiscount();
                             //nếu remove hết thì sẽ hiện thông báo
                             if(MainActivity.arrayCart.size() <= 0) {
                                 txtThongbao.setVisibility(View.VISIBLE);
                                 iconGioHang.setVisibility(View.VISIBLE);
-
+                                txtFast.setVisibility(View.VISIBLE);
                                 btnChonMa.setEnabled(false);
                             }else {
                                 txtThongbao.setVisibility(View.INVISIBLE);
+                                txtFast.setVisibility(View.INVISIBLE);
                                 iconGioHang.setVisibility(View.INVISIBLE);
                                 cartAdapter.notifyDataSetChanged();
                                 btnChonMa.setEnabled(true);
@@ -229,6 +296,7 @@ public class OrderActivity extends AppCompatActivity {
                         //cập nhật lại giỏ hàng
                         cartAdapter.notifyDataSetChanged();
                         eventUltil();
+                        setDiscount();
                     }
                 });
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -248,6 +316,7 @@ public class OrderActivity extends AppCompatActivity {
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
         txtTongTien.setText(decimalFormat.format(tongtien) + " Đ");
 
+
     }
 
     public void checkData() {
@@ -256,12 +325,14 @@ public class OrderActivity extends AppCompatActivity {
             //hiện thông báo k có sp
             txtThongbao.setVisibility(View.VISIBLE);
             iconGioHang.setVisibility(View.VISIBLE);
+            txtFast.setVisibility(View.VISIBLE);
             lvOrder.setVisibility(View.INVISIBLE);
             btnChonMa.setEnabled(false);
         }else {
             cartAdapter.notifyDataSetChanged();
-            //hiện thông báo k có sp
+            //ẩn thông báo k có sp
             txtThongbao.setVisibility(View.INVISIBLE);
+            txtFast.setVisibility(View.INVISIBLE);
             iconGioHang.setVisibility(View.INVISIBLE);
             lvOrder.setVisibility(View.VISIBLE);
             btnChonMa.setEnabled(true);
@@ -271,6 +342,7 @@ public class OrderActivity extends AppCompatActivity {
     public  void mapping(){
         lvOrder = (ListView) findViewById(R.id.listviewGioHang);
         txtThongbao = (TextView)findViewById(R.id.textthongbao);
+        txtFast = (TextView)findViewById(R.id.textFast);
         txtTongTien = (TextView)findViewById(R.id.txtTongTien);
         btnMuaHang = (Button)findViewById(R.id.btnMuaHang);
         iconGioHang = (ImageView) findViewById(R.id.icongiohang);
@@ -282,6 +354,8 @@ public class OrderActivity extends AppCompatActivity {
         btnChonMa = findViewById(R.id.btnChonMa);
         btnXoa = findViewById(R.id.btnXoa);
         btnXoa.setVisibility(View.INVISIBLE);
+        txtTienGiamGia = findViewById(R.id.txtTienGiamGia);
+
     }
 
     @Override
@@ -294,7 +368,19 @@ public class OrderActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    protected void onResume() {
+        //flag = false;
+        super.onResume();
+        if(InforDiscountActivity.discounts != null){
+            btnChonMa.setText(InforDiscountActivity.discounts.getDiscountId());
+            discount1 = InforDiscountActivity.discounts;
+            setDiscount();
+        }
+        if(flag){
+            btnXoa.setVisibility(View.VISIBLE);
+        }
+    }
 }
 
 

@@ -10,6 +10,7 @@
         android:layout_margin="5dp"
         android:layout_weight="3">
         <ImageView
+            android:layout_weight="1"
             android:adjustViewBounds="true"
             android:id="@+id/imagegiay"
             android:layout_margin="5dp"
@@ -19,12 +20,14 @@
         </ImageView>
     </LinearLayout>
     <LinearLayout
+        android:weightSum="3"
         android:orientation="vertical"
         android:layout_weight="7"
         android:layout_margin="5dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content">
         <TextView
+            android:layout_weight="1"
             android:id="@+id/texttengiay"
             android:textStyle="bold"
             android:text="Tên giày"
@@ -34,12 +37,14 @@
 
         </TextView>
         <TextView
+            android:layout_weight="0.5"
             android:text="Size: "
             android:id="@+id/size"
             android:textSize="15sp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
         <TextView
+            android:layout_weight="0.5"
             android:text="Giá giày"
             android:id="@+id/textgiagiay"
             android:textSize="15sp"
@@ -49,18 +54,19 @@
 
         </TextView>
         <LinearLayout
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/buttontru"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/button_pressed"
+                android:background="@drawable/ripplebtntru"
                 android:focusable="false"
-                android:text="-"
+
                 android:textSize="30sp"
                 android:textStyle="bold"/>
             <Button
@@ -69,7 +75,6 @@
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
-                android:layout_marginTop="5dp"
                 android:text="1"
                 android:textStyle="bold"
                 android:background="@null"
@@ -78,12 +83,12 @@
 
             <Button
                 android:id="@+id/buttoncong"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/button_pressed"
+                android:background="@drawable/ripplebtncong"
                 android:focusable="false"
-                android:text="+"
+
                 android:textSize="30sp"
                 android:textStyle="bold"/>
         </LinearLayout>

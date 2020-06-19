@@ -4,17 +4,21 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <!--        android:configChanges="keyboardHidden|screenSize|orientation"-->
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_logoapp_foreground"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_logoapp_foreground"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".InforDiscountActivity"></activity>
-        <activity android:name=".DiscountsActivity" />
+        <activity
+            android:name=".InforDiscountActivity"
+            android:launchMode="singleTask"/>
+        <activity
+            android:name=".DiscountsActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".CategoryActivity" />
         <activity android:name=".StartScreenActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -25,13 +29,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".OrderActivity" />
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".LoginActivity" android:launchMode="singleTask"/>
+        <activity android:name=".OrderActivity" android:launchMode="singleTask"/>
+        <activity android:name=".SignUpActivity" android:launchMode="singleTask"/>
         <activity android:name=".MainActivity" />
-        <activity android:name=".InfoProductsActivity" />
-        <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".AccountActivity" />
+        <activity android:name=".InfoProductsActivity" android:launchMode="singleTask"/>
+        <activity android:name=".ForgotPasswordActivity" android:launchMode="singleTask"/>
+        <activity android:name=".AccountActivity" android:launchMode="singleTask"/>
 
         <meta-data
             android:name="preloaded_fonts"

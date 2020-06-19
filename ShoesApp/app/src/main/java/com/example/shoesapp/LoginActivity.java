@@ -40,24 +40,29 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
-
+    public static FirebaseUser mUser;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private EditText emailID, passWord;
     private Button btnSignIn;
     private TextView tvSignUp, tvForgotPass;
     private ProgressDialog dg;
+    String inf = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Đăng nhập");
 
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            inf = bundle.getString("inf");
 
+        }
         emailID =findViewById(R.id.edittext_taikhoan);
         passWord = findViewById(R.id.edittext_matkhau);
         btnSignIn = (Button)findViewById(R.id.btnDangNhap);
@@ -100,12 +105,18 @@ public class LoginActivity extends AppCompatActivity {
 //                                dg.dismiss();
 //                                    Toast.makeText(LoginActivity.this,"Đăng nhập thành công!!",Toast.LENGTH_SHORT).show();
                                 if (mAuth.getCurrentUser().isEmailVerified()) {
+//                                    if(!inf.trim().isEmpty()){
+                                    mUser = FirebaseAuth.getInstance().getCurrentUser();
+                                    finish();
+//                                    }else {
+//                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    ////                                        intent.putExtra("login", "Y");
+                                    //                                        //s/tartActivity(intent);
+//                                    }
+                                   // finish();
 
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    intent.putExtra("login", "Y");
-                                    startActivity(intent);
+
                                 } else {
-
                                     Toast.makeText(LoginActivity.this,"Bạn chưa xác nhận Email!!",Toast.LENGTH_SHORT).show();
 
                                 }

@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class InforDiscountActivity extends AppCompatActivity {
-    Discounts discounts;
+    public  static Discounts discounts;
     TextView txtDescription, txtDiscountId, txtStartDate, endDate;
     Button btnSuDung;
     ImageView image2;
@@ -42,7 +42,19 @@ public class InforDiscountActivity extends AppCompatActivity {
             discounts = (Discounts) bundle.getSerializable("discountInfor");
             txtStartDate.setText(discounts.getStartDate());
             txtDiscountId.setText(discounts.getDiscountId());
-            txtDescription.setText(discounts.getDescription());
+
+            String[] splitted = discounts.getDescription().split("=");
+
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < splitted.length; i++){
+                //s += splitted[i] + System.getProperty("line.separator");
+                stringBuilder.append(splitted[i]);
+                stringBuilder.append(System.getProperty("line.separator"));
+            }
+            if(stringBuilder != null)
+                txtDescription.setText(stringBuilder);
+            //txtDescription.setText("gdgfdgd" + System.getProperty("line.separator") + "fdfgdfgdfg");
+
             endDate.setText(discounts.getEndDate());
             Picasso.with(getApplicationContext()).load(discounts.getImage())
                     .into(image2);
@@ -56,12 +68,21 @@ public class InforDiscountActivity extends AppCompatActivity {
                 try {
                     if(!df.parse(discounts.getStartDate()).before(new Date())){ // chưa tới ngày áp dụng khuyến mãi
                         Toast.makeText(InforDiscountActivity.this, "Chưa tới ngày áp dụng mã.Vui lòng chọn mã khác", Toast.LENGTH_SHORT).show();
+                        //finish();
                         Intent intent = new Intent(getApplicationContext(), DiscountsActivity.class);
+                        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        //intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         getApplicationContext().startActivity(intent);
                     }else {
+                        //finish();
                         Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
                         intent.putExtra("discounts", discounts);
+                        //OrderActivity.discount1 = discounts;
+                        //intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getApplicationContext().startActivity(intent);
                     }

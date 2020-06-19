@@ -103,36 +103,24 @@ public class AccountActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // mở gallery
                 Intent opGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                opGallery.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // để clear acivity khi back
+                opGallery.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(opGallery, 1000);
             }
         });
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.account_menu, menu);
-        return true;
 
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id =  item.getItemId();
-        switch (id) {
-            case  R.id.sua:
-
-                return true;
-            case android.R.id.home:
-            {
+        if(android.R.id.home == id) {
                 this.finish();
-            }
-
-
-            default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
+
     }
 }
 

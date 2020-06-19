@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ShoesApp</string>
+    <string name="app_name">Nebula</string>
     <string name="Open">ShoesApp</string>
     <string name="Close">ShoesApp</string>
     <string name="text_search">Tìm kiếm</string>
@@ -38,6 +38,10 @@
     <string name="size9uk">9 UK</string>
     <string name="size10uk">10 UK</string>
     <string name="dathang">Thêm vào giỏ hàng</string>
+
+    <string name="text_quenmk">Bạn quên mật khẩu?</string>
+    <string name="text_quenmk2">Vui lòng cung cấp email đã đăng kí.</string>
+    <string name="txtmuangay">Mua ngay</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

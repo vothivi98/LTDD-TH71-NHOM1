@@ -23,6 +23,7 @@ import com.example.model.Cart;
 import com.example.model.ImageProduct;
 import com.example.model.Products;
 import com.example.myadapter.SliderAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -86,62 +87,69 @@ public class InfoProductsActivity extends AppCompatActivity {
         btnDh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(btnSelected && !txtsoluong.getText().equals("0")){ //chọn ca hai
-                    Toast.makeText(InfoProductsActivity.this, "Thêm vào giỏ hàng thành công",
-                            Toast.LENGTH_SHORT).show();
-                    String size = "";
-                    if(btnuk7.isEnabled()){
-                        size = btnuk7.getText().toString();
-                    }else if(btnuk8.isEnabled()){
-                        size = btnuk8.getText().toString();
-                    }else if(btnuk9.isEnabled()){
-                        size = btnuk9.getText().toString();
-                    }else
-                        size = btnuk10.getText().toString();
+                if(MainActivity.mUser != null || LoginActivity.mUser != null){
+                    if(btnSelected && !txtsoluong.getText().equals("0")){ //chọn ca hai
+                        Toast.makeText(InfoProductsActivity.this, "Thêm vào giỏ hàng thành công",
+                                Toast.LENGTH_SHORT).show();
+                        String size = "";
+                        if(btnuk7.isEnabled()){
+                            size = btnuk7.getText().toString();
+                        }else if(btnuk8.isEnabled()){
+                            size = btnuk8.getText().toString();
+                        }else if(btnuk9.isEnabled()){
+                            size = btnuk9.getText().toString();
+                        }else
+                            size = btnuk10.getText().toString();
                         //Order
-                    boolean exists = false;
-                    if(MainActivity.arrayCart.size() > 0){
-                        int soluong = Integer.parseInt(txtsoluong.getText().toString());
-                        //kiểm tra nếu sp đã đặt thì tăng sl
-                        for(int i = 0; i < MainActivity.arrayCart.size(); i++){
-                            if(MainActivity.arrayCart.get(i).getProductId().equals(products.getProductId())){
-                                // cap nhat tong sl
-                                MainActivity.arrayCart.get(i).setQuantity(
-                                        MainActivity.arrayCart.get(i).getQuantity() + soluong);
-                                //k đặt quá 50sp
-                                if(MainActivity.arrayCart.get(i).getQuantity() >= 10)
-                                    MainActivity.arrayCart.get(i).setQuantity(10);
-                                // cap nhat tong gia tien
+                        boolean exists = false;
+                        if(MainActivity.arrayCart.size() > 0){
+                            int soluong = Integer.parseInt(txtsoluong.getText().toString());
+                            //kiểm tra nếu sp đã đặt thì tăng sl
+                            for(int i = 0; i < MainActivity.arrayCart.size(); i++){
+                                if(MainActivity.arrayCart.get(i).getProductId().equals(products.getProductId())){
+                                    // cap nhat tong sl
+                                    MainActivity.arrayCart.get(i).setQuantity(
+                                            MainActivity.arrayCart.get(i).getQuantity() + soluong);
+                                    //k đặt quá 50sp
+                                    if(MainActivity.arrayCart.get(i).getQuantity() >= 10)
+                                        MainActivity.arrayCart.get(i).setQuantity(10);
+                                    // cap nhat tong gia tien
 //                                MainActivity.arrayCart.get(i).setPrice(
 //                                        products.getPrice() * MainActivity.arrayCart.get(i).getQuantity());
-                                exists = true;
+                                    exists = true;
+                                }
                             }
-                        }
-                        if(exists == false){
+                            if(exists == false){
+                                int sl = Integer.parseInt(txtsoluong.getText().toString());
+                                //int giaMoi = sl * products.getPrice();
+                                MainActivity.arrayCart.add(new Cart(products.getProductId(),
+                                        products.getProductName(), products.getImgProduct(),
+                                        products.getPrice(), sl, size, products.getCateId()));
+                            }
+                        }else {
                             int sl = Integer.parseInt(txtsoluong.getText().toString());
                             //int giaMoi = sl * products.getPrice();
                             MainActivity.arrayCart.add(new Cart(products.getProductId(),
                                     products.getProductName(), products.getImgProduct(),
                                     products.getPrice(), sl, size, products.getCateId()));
                         }
-                    }else {
-                        int sl = Integer.parseInt(txtsoluong.getText().toString());
-                        //int giaMoi = sl * products.getPrice();
-                        MainActivity.arrayCart.add(new Cart(products.getProductId(),
-                                products.getProductName(), products.getImgProduct(),
-                                products.getPrice(), sl, size, products.getCateId()));
-                    }
 
-                }else if(!btnSelected && !txtsoluong.getText().equals("0")){// chọn sl, k chọn size
-                    Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn size",
-                            Toast.LENGTH_SHORT).show();
-                }else if(btnSelected && txtsoluong.getText().equals("0")){ //chọn size, k chọn sl
-                    Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng",
-                            Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng và size",
-                            Toast.LENGTH_SHORT).show();
+                    }else if(!btnSelected && !txtsoluong.getText().equals("0")){// chọn sl, k chọn size
+                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn size",
+                                Toast.LENGTH_SHORT).show();
+                    }else if(btnSelected && txtsoluong.getText().equals("0")){ //chọn size, k chọn sl
+                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng",
+                                Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng và size",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.putExtra("inf", "yes");
+                    startActivity(intent);
                 }
+
 
             }
         });

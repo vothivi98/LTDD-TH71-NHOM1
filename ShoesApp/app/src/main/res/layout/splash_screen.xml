@@ -9,10 +9,10 @@
 
     <ImageView
         android:id="@+id/logoStart"
-        android:layout_width="400dp"
-        android:layout_height="385dp"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
         android:layout_marginBottom="200dp"
-        android:src="@drawable/various_projects__character_design_11"
+        android:src="@drawable/screen"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
@@ -21,30 +21,16 @@
         app:layout_constraintVertical_bias="1.0"
         tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/txt1Start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="106dp"
-        android:layout_marginBottom="207dp"
-        android:fontFamily="@font/bangers"
-        android:text="TextView"
-        android:textSize="70sp"
+    <ImageView
+        android:id="@+id/logoStart2"
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:layout_marginBottom="80dp"
+        android:src="@drawable/logo_blackwhite"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoStart" />
-
-    <TextView
-        android:id="@+id/txt2Start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="114dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt1Start" />
+        app:layout_constraintTop_toBottomOf="@+id/logoStart"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

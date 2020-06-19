@@ -46,12 +46,22 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_below="@+id/videoView" />
+                <TextView
+                    android:id="@+id/txtspham"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/recyclerView_Logo"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="Mã giảm giá"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/hind_madurai_light"/>
 
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/viewPager"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_below="@+id/recyclerView_Logo"
+                    android:layout_height="200dp"
+                    android:layout_below="@+id/txtspham"
                     android:layout_marginBottom="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -96,7 +106,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_below="@+id/txts_pham"
-                            android:layout_marginBottom="70dp" />
+                            android:layout_marginBottom="70dp"
+                            android:background="@android:color/white"/>
 
 
                     </FrameLayout>

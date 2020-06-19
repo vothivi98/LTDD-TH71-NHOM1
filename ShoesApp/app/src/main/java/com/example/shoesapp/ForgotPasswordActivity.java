@@ -81,7 +81,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();
                 Intent i = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
+
                 startActivity(i);
             }
         });

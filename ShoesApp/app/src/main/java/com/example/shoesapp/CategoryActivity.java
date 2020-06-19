@@ -104,10 +104,18 @@ public class CategoryActivity extends AppCompatActivity  implements RecyclerView
             case R.id.nav_cart:
                 //hiện giỏ hàng
                 Intent intents = new Intent(this, OrderActivity.class);
+                intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // để clear acivity khi back
+                intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intents.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intents);
                 return true;
             case android.R.id.home:
-                this.finish();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+                //this.finish();
                 return true;
 
             default:

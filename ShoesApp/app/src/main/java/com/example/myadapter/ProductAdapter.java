@@ -59,6 +59,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             public void onClick(View v) {
                 Intent intent = new Intent(context, InfoProductsActivity.class);
                 intent.putExtra("productInfor", product);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // để clear acivity khi back
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

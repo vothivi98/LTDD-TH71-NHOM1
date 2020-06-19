@@ -11,9 +11,12 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,7 +72,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private FrameLayout mainFrame;
     private SearchView searchView;
     private ImageView imgThongBao;
-    private TextView txtThongBao, tenKH, emailKH;
+    private TextView txtThongBao;
+    public static TextView tenKH, emailKH;
+    public static String userId = "";
     ArrayList<Categories> imageURLs;
     ArrayList<Products> arrayProduct;
     ArrayList<Discounts> arrayImageDiscount;
@@ -82,16 +87,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     String co = "", login = "";
 //    View headerview;
     private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
+    public static FirebaseUser mUser;
     private DatabaseReference mData;
     private DatabaseReference mReference;
     private ProgressDialog dg;
     LoadingDialog loadingDialog;
     public static  ArrayList<Cart> arrayCart;
     private StorageReference storageReference;
+    boolean isResume = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        isResume = true;
         //fullscreen
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 //                WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -109,9 +117,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
 
         //load video
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.gas);
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.giay);
         try {
             mvideoView.setVideoURI(uri);
+            mvideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp){
+                    mp.setLooping(true);
+                }
+            });
         } catch (NullPointerException techmaster1) {
             System.out.println("Loi khong load duoc video" + techmaster1);
         }
@@ -198,10 +212,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             public void onClick(View v) {
                 if (mUser != null) {
                     // User is signed in
+
                     Intent intent = new Intent(MainActivity.this, AccountActivity.class);
                     startActivity(intent);
                 } else {
                     // No user is signed in
+                    //finish();
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
@@ -211,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         loadImageDiscount();
     }
 
-    public void loadImageDiscount() {
+    public   void loadImageDiscount() {
         mData.child("Discounts").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -317,36 +333,29 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     public void loadInforUser(){
         if(mUser != null) {
-            String currentUserID = mUser.getUid(); //Do what you need to do with the id
-            mReference.child(currentUserID).addValueEventListener(new ValueEventListener() {
+            userId = mUser.getUid(); //Do what you need to do with the id
+            Query query = mReference.orderByChild("emailUser").equalTo(mUser.getEmail());
+            query.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot)
-                {
-                    if(dataSnapshot.exists())
-                    {
-                        if(dataSnapshot.hasChild("fullName"))
-                        {
-                            String fullname = dataSnapshot.child("fullName").getValue().toString();
-                            tenKH.setText(fullname);
-                        }
-                        if(dataSnapshot.hasChild("emailUser"))
-                        {
-                            String e = dataSnapshot.child("emailUser").getValue().toString();
-//                            Picasso.get().load(image).placeholder(R.drawable.profile).into(navProfileImage);
-                            emailKH.setText(e);
-                        }
-                        else
-                        {
-                            Toast.makeText(MainActivity.this, "Thông tin không tồn tại...", Toast.LENGTH_SHORT).show();
-                        }
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                        //get data
+                        String ten = ""+ds.child("fullName").getValue();
+                        String e = ""+ds.child("emailUser").getValue();
+
+                        //set data
+                        tenKH.setText(ten);
+                        emailKH.setText(e);
+
                     }
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
             });
+
         }
     }
 
@@ -354,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     protected void onRestart() {
         super.onRestart();
         //load video
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.gas);
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.giay);
         try {
             mvideoView.setVideoURI(uri);
         } catch (NullPointerException techmaster1) {
@@ -374,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        //Hành động khi click vào giỏ hàng
+        //Hành động khi click vào giỏ hàngo
         if(t.onOptionsItemSelected(item))
             return true;
         switch (id){
@@ -416,11 +425,31 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 dg.show();
                 if (mUser != null) {
                     mAuth.signOut();
+                    mUser = null;
                     MainActivity.arrayCart.clear();
-//                    Intent intent1 = new Intent(MainActivity.this, LoginActivity.class);
-//                    startActivity(intent1);
-//
-                    finish();
+                    Thread bamgio=new Thread(){
+                        public void run()
+                        {
+                            try {
+                                sleep(3000);
+
+                            } catch (Exception e) {
+
+                            }
+                            finally
+                            {
+                                dg.dismiss();
+
+                                finish();
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+
+                            }
+                        }
+                    };
+
+                    bamgio.start();
 
                 } else {
                     // No user is signed in
@@ -432,5 +461,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         }
         return false;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(LoginActivity.mUser != null){
+            mUser = LoginActivity.mUser;
+            mAuth =FirebaseAuth.getInstance();
+            mReference = FirebaseDatabase.getInstance().getReference("UserInfor");
+            loadInforUser();
+        }
+        LoginActivity.mUser = null;
+
+
+
+    }
+
+
 }
 
