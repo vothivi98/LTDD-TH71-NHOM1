@@ -4,38 +4,81 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--        android:configChanges="keyboardHidden|screenSize|orientation"-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
-        android:allowBackup="true"
+
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_logoapp_foreground"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_logoapp_foreground"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".InforDiscountActivity"
+            android:name=".ViewOrderDetailActivity"
             android:launchMode="singleTask"/>
         <activity
+            android:name=".ViewOrdersActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ConfirmAccountActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".InforDiscountActivity"
+            android:launchMode="singleTask" />
+        <activity
             android:name=".DiscountsActivity"
-            android:launchMode="singleTask"/>
-        <activity android:name=".CategoryActivity" />
-        <activity android:name=".StartScreenActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".CategoryActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".StartActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"
-                    />
+                <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" android:launchMode="singleTask"/>
-        <activity android:name=".OrderActivity" android:launchMode="singleTask"/>
-        <activity android:name=".SignUpActivity" android:launchMode="singleTask"/>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".InfoProductsActivity" android:launchMode="singleTask"/>
-        <activity android:name=".ForgotPasswordActivity" android:launchMode="singleTask"/>
-        <activity android:name=".AccountActivity" android:launchMode="singleTask"/>
+        <activity
+            android:name=".LoginActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".OrderActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".SignUpActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".InfoProductsActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".AccountActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".SettingActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".UpdateAccountActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".UpdatePasswordActivity"
+            android:launchMode="singleTask" />
 
         <meta-data
             android:name="preloaded_fonts"

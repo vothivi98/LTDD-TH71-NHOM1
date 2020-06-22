@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/ln"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="57dp"
+            android:background="@drawable/bg_shipper"
+            android:layout_gravity="center_vertical"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/orderId"
+                android:textColor="@android:color/black"
+                android:text="Mã đơn hàng:"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+            <TextView
+                android:layout_weight="0.5"
+                android:text="Ngày đặt hàng:"
+                android:id="@+id/orderDate"
+                android:textSize="18sp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:layout_weight="0.5"
+                android:text="Tổng tiền:"
+                android:id="@+id/total"
+                android:textSize="18sp"
+                android:textColor="#f44336"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

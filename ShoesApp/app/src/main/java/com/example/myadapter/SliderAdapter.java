@@ -42,8 +42,9 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
         //holder.(sliderItems.get(position));
         Picasso.with(context).load(sliderItems.get(position).getImg())
-                .fit()
+
                 .centerCrop()
+                .resize(550, 700)
                 .into(holder.imageView);
     }
 

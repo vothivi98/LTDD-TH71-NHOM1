@@ -36,10 +36,8 @@ public class StartScreenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Intent callMainAcc = new Intent(getApplicationContext(), MainActivity.class);
-                callMainAcc.putExtra("co", "Y");
-                callMainAcc.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // để clear acivity khi back
+                callMainAcc.putExtra("co", "Y"); // để clear acivity khi back
                 callMainAcc.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                callMainAcc.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(callMainAcc);
                 finish();
             }

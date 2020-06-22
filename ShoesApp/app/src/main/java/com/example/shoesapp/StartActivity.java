@@ -2,33 +2,48 @@ package com.example.shoesapp;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 
 public class StartActivity extends AppCompatActivity {
-
+    VideoView mvideoView;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //fullscreen
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_start);
-        getSupportActionBar().hide();
+
+        mvideoView = (VideoView) findViewById(R.id.videoItro);
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.intro );
+
+        try {
+            mvideoView.setVideoURI(uri);
+        } catch (NullPointerException techmaster1)
+        {
+            System.out.println("Couldn't load video" + techmaster1);
+        }
+        mvideoView.start();
+
+
+//        getSupportActionBar().hide();
         //Dùng cài đặt sau 3 giây màn hình tự chuyển
         Thread bamgio=new Thread(){
             public void run()
             {
                 try {
-                    sleep(3000);
+
+                    sleep(2500);
                 } catch (Exception e) {
 
                 }
                 finally
                 {
-                    Intent callMainAcc = new Intent(getApplicationContext(), MainActivity.class);
+                    mvideoView.stopPlayback();
+                    mvideoView.resume();
+                    Intent callMainAcc=new Intent(StartActivity.this, MainActivity.class);
                     callMainAcc.putExtra("co", "Y");
                     callMainAcc.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getApplicationContext().startActivity(callMainAcc);

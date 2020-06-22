@@ -88,7 +88,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="50dp"
+                            android:layout_marginTop="20dp"
                             android:src="@drawable/ic_launcher_background"/>
 
 
@@ -96,7 +96,7 @@
                             android:id="@+id/txtThongBao"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="250dp"
+                            android:layout_marginTop="140dp"
                             android:gravity="center"
                             android:text="Không tìm thấy sản phẩm nào!"
                             android:textSize="25dp" />

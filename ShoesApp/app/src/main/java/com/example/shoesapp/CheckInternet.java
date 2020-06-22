@@ -3,23 +3,29 @@ package com.example.shoesapp;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 
-public class CheckInternet {
+import androidx.appcompat.app.AppCompatActivity;
 
-    public static boolean haveNetworkConnection(Context context) {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
+public class CheckInternet extends AppCompatActivity {
 
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
-        }
-        return haveConnectedWifi || haveConnectedMobile;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_error_internet);
+
+
     }
+
+//    protected void checkInterNet(){
+//        ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext()
+//                .getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo network = connectivityManager.getActiveNetworkInfo();
+//
+//        if(network == null || !network.isConnected() || !network.isAvailable()){
+//
+//        }
+//    }
+
+
 }

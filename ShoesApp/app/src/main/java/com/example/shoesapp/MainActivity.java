@@ -10,9 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,6 +54,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     String name = "";
     String cateId = "";
     String descripiton = "";
+    public static boolean anXacNhan = false;
     int price = 0;
     String img = "";
     int index = 0;
@@ -73,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private SearchView searchView;
     private ImageView imgThongBao;
     private TextView txtThongBao;
+    private ImageView imageNav;
     public static TextView tenKH, emailKH;
     public static String userId = "";
     ArrayList<Categories> imageURLs;
@@ -145,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                         //hide the dialog after 4550 milliseconds
                         loadingDialog.dismissDialog();
                     }
-                }, 4530);
+                }, 3000);
             }
             if(login != null){
                 mUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -173,14 +180,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             }
         });
         //get product
-        mData.child("Products").limitToLast(6).addValueEventListener(new ValueEventListener() {
+        mData.child("Products").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot dt : dataSnapshot.getChildren()){
-
                     Products pro = dt.getValue(Products.class);
                     arrayProduct.add(pro);
                     productAdapter.notifyDataSetChanged();
+
+
                 }
                 checkData();
             }
@@ -227,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         loadImageDiscount();
     }
 
-    public   void loadImageDiscount() {
+    public void loadImageDiscount() {
         mData.child("Discounts").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -261,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     public void search(String str) {
         ArrayList<Products> arraySearch = new ArrayList<>();
+
         for(Products p : arrayProduct){
             if(p.getProductName().toLowerCase().contains(str.toLowerCase())){
                 arraySearch.add(p);
@@ -322,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         headerview = navView.getHeaderView(0);
         tenKH = (TextView)headerview.findViewById(R.id.tenKH);
         emailKH = (TextView) headerview.findViewById(R.id.emailKH);
+        imageNav = (ImageView)headerview.findViewById(R.id.imageView);
         if(arrayCart != null){
 
         }else {
@@ -342,10 +352,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                         //get data
                         String ten = ""+ds.child("fullName").getValue();
                         String e = ""+ds.child("emailUser").getValue();
-
-                        //set data
-                        tenKH.setText(ten);
-                        emailKH.setText(e);
+                        String i = ""+ds.child("imgUser").getValue();
+                        if(i.isEmpty()){
+                            emailKH.setText(e);
+                            tenKH.setText(ten);
+                        } else {
+                            Picasso.with(MainActivity.this).load(i).into(imageNav);
+                            emailKH.setText(e);
+                            tenKH.setText(ten);
+                        }
 
                     }
                 }
@@ -406,18 +421,36 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         int id = menuItem.getItemId();
         switch (id) {
-            case R.id.donHang:
-                Toast.makeText(MainActivity.this, "Sản phẩm đã mua",
-                        Toast.LENGTH_SHORT).show();
+            case R.id.category:
+                Intent intent = new Intent(getApplicationContext(), CategoryActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 break;
-            case R.id.soDiaChi:
-                Toast.makeText(MainActivity.this, "Sổ địa chỉ",
-                        Toast.LENGTH_SHORT).show();
-
+            case R.id.order1:
+                if(mUser != null){
+                    anXacNhan = true;
+                    Intent intent3 = new Intent(getApplicationContext(), ViewOrdersActivity.class);
+                    intent3.putExtra("order1", "y");
+                    startActivity(intent3);
+                }else {
+                    Toast.makeText(MainActivity.this, "Vui lòng đăng nhập để xem đơn hàng!!",
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.khuyenMai:
+                Intent intent2 = new Intent(getApplicationContext(), DiscountsActivity.class);
+                intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent2);
                 break;
             case R.id.order:
-                Toast.makeText(MainActivity.this, "Đơn hàng đang chờ vận chuyển",
-                        Toast.LENGTH_SHORT).show();
+                if(mUser != null){
+                    Intent intent1 = new Intent(MainActivity.this, ViewOrdersActivity.class);
+                    startActivity(intent1);
+                }else {
+                    Toast.makeText(MainActivity.this, "Vui lòng đăng nhập để xem đơn hàng!!",
+                            Toast.LENGTH_SHORT).show();
+                }
+
 
                 break;
             case R.id.dangxuat:
@@ -431,7 +464,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                         public void run()
                         {
                             try {
-                                sleep(3000);
+                                sleep(2000);
 
                             } catch (Exception e) {
 
@@ -439,7 +472,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                             finally
                             {
                                 dg.dismiss();
-
                                 finish();
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

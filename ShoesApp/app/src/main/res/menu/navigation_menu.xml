@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/donHang"
-        android:icon="@drawable/ic_shopping_cart_black_24dp"
-        android:title="Sản phẩm đã mua"/>
-    <item android:id="@+id/order"
-        android:icon="@drawable/ic_local_shipping_black_24dp"
-        android:title="Đơn hàng đang chờ vận chuyển"/>
-    <item android:id="@+id/soDiaChi"
-        android:icon="@drawable/ic_location_on_black_24dp"
-        android:title="Sổ địa chỉ"/>
-    <item android:id="@+id/dangxuat"
-        android:icon="@drawable/baseline_exit_to_app_black_24dp"
-        android:title="Đăng xuất"/>
+    <group android:id="@+id/menu_top">
+        <item android:id="@+id/category"
+            android:icon="@drawable/ic_format_list_bulleted_black_24dp"
+            android:title="Danh mục sản phẩm"/>
+        <item android:id="@+id/khuyenMai"
+            android:icon="@drawable/ic_style_black_24dp"
+            android:title="Khuyến mãi"/>
+        <item android:id="@+id/order"
+            android:icon="@drawable/ic_local_shipping_black_24dp"
+            android:title="Đơn hàng đang vận chuyển"/>
+        <item android:id="@+id/order1"
+            android:icon="@drawable/ic_monetization_on_black_24dp"
+            android:title="Đơn hàng đã thanh toán"/>
+    </group>
 
-
+    <group android:checkableBehavior="none"
+        android:id="@+id/menu_bottom">
+        <item android:id="@+id/dangxuat"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="Đăng xuất"/>
+    </group>
 </menu>

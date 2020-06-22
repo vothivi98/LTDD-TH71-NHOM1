@@ -1,6 +1,8 @@
 package com.example.myadapter;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +90,27 @@ public class CartAdapter extends BaseAdapter {
         }
 
         final ViewHolder finalViewHolder = viewHolder;
+        viewHolder.btnSoLuong.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(Integer.parseInt(finalViewHolder.btnSoLuong.getText().toString()) == 10){
+                    finalViewHolder.btnCong.setEnabled(false);
+                }
+                if(Integer.parseInt(finalViewHolder.btnSoLuong.getText().toString()) == 1){
+                    finalViewHolder.btnTru.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         viewHolder.btnCong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,11 +119,14 @@ public class CartAdapter extends BaseAdapter {
 
                 MainActivity.arrayCart.get(position).setQuantity(slMoiNhat);
                 OrderActivity.eventUltil();
+                finalViewHolder.btnTru.setEnabled(true);
                 if(slMoiNhat > 9){
+
                     finalViewHolder.btnCong.setVisibility(View.INVISIBLE);
                     finalViewHolder.btnTru.setVisibility(View.VISIBLE);
                     finalViewHolder.btnSoLuong.setText(String.valueOf(slMoiNhat));
                 }else {
+
                     finalViewHolder.btnTru.setVisibility(View.VISIBLE);
                     finalViewHolder.btnCong.setVisibility(View.VISIBLE);
                     finalViewHolder.btnSoLuong.setText(String.valueOf(slMoiNhat));
@@ -111,6 +137,7 @@ public class CartAdapter extends BaseAdapter {
         viewHolder.btnTru.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finalViewHolder.btnCong.setEnabled(true);
                 int slMoiNhat = Integer.parseInt(finalViewHolder.btnSoLuong.getText().toString()) - 1;
                 //int slHt = MainActivity.arrayCart.get(position).getQuantity();
                 MainActivity.arrayCart.get(position).setQuantity(slMoiNhat);

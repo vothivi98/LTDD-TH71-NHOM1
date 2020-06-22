@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -124,55 +125,77 @@ public class SignUpActivity extends AppCompatActivity {
 
 
                 } else if(!email.isEmpty() && !pass.isEmpty()){
-                    if(CheckInternet.haveNetworkConnection(getApplicationContext())){
+//                    if(CheckInternet.haveNetworkConnection(getApplicationContext())){
                         dg.setMessage("Đang Tạo Tài Khoản...");
                         dg.show();
-                        mfirebaseAuth.createUserWithEmailAndPassword(email, pass).
-                                addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if(!task.isSuccessful()){
-                                            dg.dismiss();
-                                            Toast.makeText(SignUpActivity.this, "Email có thể đã tồn tại. Hãy thử lại lần nữa!",
-                                                    Toast.LENGTH_SHORT).show();
+                        mfirebaseAuth.fetchSignInMethodsForEmail(txtemail.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                                if (task.getResult().getSignInMethods().size() == 0) {
+//                                    Toast.makeText(ForgotPasswordActivity.this, "Email không tồn tại", Toast.LENGTH_SHORT).show();
+                                    mfirebaseAuth.createUserWithEmailAndPassword(email, pass).
+                                            addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                                    if(!task.isSuccessful()){
+                                                        dg.dismiss();
+                                                        Toast.makeText(SignUpActivity.this, task.getException().getMessage(),
+                                                                Toast.LENGTH_LONG).show();
 
-                                        } else {
-                                            if(pass.equals(nhapLaiPass)){
-                                                dg.dismiss();
-                                                mFirebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if(task.isSuccessful()){
-                                                            UserInfor userInfor = new UserInfor(hoTen, diaChi, sdt, email, i);
-
-                                                            FirebaseDatabase.getInstance().getReference("UserInfor").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                                    .setValue(userInfor).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    } else {
+                                                        if(pass.equals(nhapLaiPass)){
+                                                            dg.dismiss();
+                                                            mFirebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                                    Toast.makeText(SignUpActivity.this,"Tạo tài khoản thành công ^^. Xin kiểm tra và xác nhận Email.",Toast.LENGTH_SHORT).show();
-                                                                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                                                    if(task.isSuccessful()){
+                                                                        UserInfor userInfor = new UserInfor(hoTen, diaChi, sdt, email, i);
+
+                                                                        FirebaseDatabase.getInstance().getReference("UserInfor")
+                                                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                                .setValue(userInfor).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                Toast.makeText(SignUpActivity.this,"Tạo tài khoản thành công ^^. Xin kiểm tra và xác nhận Email.",
+                                                                                        Toast.LENGTH_SHORT).show();
+                                                                                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
 
 //                                                        startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
-                                                                    startActivity(intent);
+                                                                                startActivity(intent);
+                                                                                finish();
 
+                                                                            }
+                                                                        });
+                                                                    } else{
+                                                                        dg.dismiss();
+                                                                        Toast.makeText(SignUpActivity.this,task.getException().getMessage(),Toast.LENGTH_LONG).show();
+
+                                                                    }
                                                                 }
                                                             });
-                                                        } else{
-                                                            Toast.makeText(SignUpActivity.this,task.getException().getMessage(),Toast.LENGTH_LONG).show();
 
+                                                        } else {
+                                                            dg.dismiss();
+                                                            Toast.makeText(SignUpActivity.this, "Mật khẩu không trùng khớp!", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
-                                                });
 
-                                            } else {
-                                                dg.dismiss();
-                                                Toast.makeText(SignUpActivity.this, "Mật khẩu không trùng khớp!", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
+                                                }
+                                            });
+                                } else {
+                                    dg.dismiss();
+                                    Toast.makeText(SignUpActivity.this, "Email đã được sử dụng!", Toast.LENGTH_SHORT).show();
 
-                                    }
-                                });
-                    }
+                                }
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    //}
 
                 } else{
                     dg.dismiss();

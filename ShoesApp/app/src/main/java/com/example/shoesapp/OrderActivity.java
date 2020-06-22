@@ -12,6 +12,7 @@ import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -63,8 +64,8 @@ import java.util.Locale;
 public class OrderActivity extends AppCompatActivity {
 
     ListView lvOrder;
-    public  static TextView txtTongTien;
-    TextView txtThongbao, txtTienGiamGia, txtmagiamgia1, txtFast;
+    public  static TextView txtTongTien, txtTienGiamGia;
+    TextView txtThongbao , txtmagiamgia1, txtFast, txtThanhToan;
     Button btnMuaHang, btnKhong, btnCo, btnChonMa, btnXoa;
     ImageView iconGioHang;
     EditText txtGiamGia;
@@ -121,9 +122,14 @@ public class OrderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 btnChonMa.setText("Chọn mã giảm");
                 btnXoa.setVisibility(View.INVISIBLE);
-                txtTienGiamGia.setText("0Đ");
+                txtTienGiamGia.setText("");
+                flag = false;
+                discount1 = null;
+                InforDiscountActivity.discounts = null;
+                txtThanhToan.setVisibility(View.INVISIBLE);
             }
         });
+
         txtTongTien.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -154,16 +160,12 @@ public class OrderActivity extends AppCompatActivity {
                 }
             }
             if(discount1.getMinQuantity() <= count1 && count1 <= discount1.getMaxQuantity()){
+                txtThanhToan.setVisibility(View.VISIBLE);
                 discountId2 = discount1.getDiscountId();
                 totalFinal = total - (total * discount1.getPercentage());
                 DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
                 txtTienGiamGia.setText(decimalFormat.format(totalFinal) + " Đ");
-                // gạch bo giá cũ
-                SpannableStringBuilder ssb = new SpannableStringBuilder(txtTongTien.getText());
-                StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
-                ssb.setSpan(
-                        strikethroughSpan,0,ssb.length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
                 flag = true;
             }else {
                 flag = false;
@@ -172,70 +174,37 @@ public class OrderActivity extends AppCompatActivity {
                 discount1 = null;
                 InforDiscountActivity.discounts = null;
                 btnXoa.setVisibility(View.INVISIBLE);
-                txtTienGiamGia.setText("0Đ");
+                txtTienGiamGia.setText("");
+                txtThanhToan.setVisibility(View.INVISIBLE);
             }
         }
     }
-
     public void orderProducts() {
         btnMuaHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 1. Xét có sp trong giỏ hàng k
                 //2. xét đã đăng nhập hay chưa
+                totalFinal = total;
                 if(MainActivity.arrayCart.size() > 0){
-//                    if(MainActivity.mUser!= null || LoginActivity.mUser != null){
+                        Intent intent = new Intent(getApplicationContext(), ConfirmAccountActivity.class);
+                        intent.putExtra("discountId2", discountId2);
+                        intent.putExtra("totalFinal", totalFinal);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
 
-//                    Toast.makeText(OrderActivity.this,
-//                            "Dùng mã giảm giá", Toast.LENGTH_SHORT).show();
-                        //Intent intent = new Intent(getApplicationContext(), );
-                        //Lưu thông tin mua hàng lên firebase
-                        // Lưu vào bảng Orders
-                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        String orderId = mData.child("Orders").push().getKey(); // lấy kye cua firbase
-                        String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-                        Orders od1= new Orders(userId, orderId, currentDate, discountId2, totalFinal);
-                        mData.child("Orders").child(orderId).setValue(od1);
-
-
-                        //Lưu vào bảng Order Detail
-
-                        for (int i = 0; i < MainActivity.arrayCart.size(); i++){
-                            String productId = MainActivity.arrayCart.get(i).getProductId();
-                            int price1 = MainActivity.arrayCart.get(i).getPrice();
-                            int quantity = MainActivity.arrayCart.get(i).getQuantity();
-                            String size1 = MainActivity.arrayCart.get(i).getSize();
-                            OrderDetail orderDetail = new OrderDetail(orderId, productId,
-                                    price1, quantity, size1);
-                            mData.child("Order Detail").push().setValue(orderDetail);
-
-
-                        }
-
-                        Toast.makeText(OrderActivity.this,
-                                "Đặt hàng thành công!!!", Toast.LENGTH_SHORT).show();
-                        //xóa sp trong giỏ
-                        MainActivity.arrayCart.clear();
-                        cartAdapter.notifyDataSetChanged();
-                        eventUltil();
-                        //hiện thông báo k có sp
-                        txtThongbao.setVisibility(View.VISIBLE);
-                        iconGioHang.setVisibility(View.VISIBLE);
-                        txtFast.setVisibility(View.VISIBLE);
-                        lvOrder.setVisibility(View.VISIBLE);
-                        // ẩn btn xóa giảm giá
-                        btnXoa.setVisibility(View.INVISIBLE);
-                        btnChonMa.setText("Chọn mã giảm");
-                         // vô hiệu hóa btn chọn mã
-                        btnChonMa.setEnabled(false);
-//                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        startActivity(intent);
-
-//                    }else {
-//                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-//                        startActivity(intent);
-//                    }
+//                        cartAdapter.notifyDataSetChanged();
+//                        eventUltil();
+//                        //hiện thông báo k có sp
+//                        txtThongbao.setVisibility(View.VISIBLE);
+//                        iconGioHang.setVisibility(View.VISIBLE);
+//                        txtFast.setVisibility(View.VISIBLE);
+//                        lvOrder.setVisibility(View.VISIBLE);
+//                        // ẩn btn xóa giảm giá
+//                        btnXoa.setVisibility(View.INVISIBLE);
+//                        btnChonMa.setText("Chọn mã giảm");
+//                         // vô hiệu hóa btn chọn mã
+//                        btnChonMa.setEnabled(false);
 
                 }else {
                     Toast.makeText(OrderActivity.this,
@@ -315,6 +284,7 @@ public class OrderActivity extends AppCompatActivity {
         total = tongtien;
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
         txtTongTien.setText(decimalFormat.format(tongtien) + " Đ");
+        //txtTienGiamGia.setText(decimalFormat.format(tongtien) + " Đ");
 
 
     }
@@ -355,7 +325,10 @@ public class OrderActivity extends AppCompatActivity {
         btnXoa = findViewById(R.id.btnXoa);
         btnXoa.setVisibility(View.INVISIBLE);
         txtTienGiamGia = findViewById(R.id.txtTienGiamGia);
-
+        txtmagiamgia1 = findViewById(R.id.txtmagiamgia);
+        txtThanhToan = findViewById(R.id.txtThanhToan);
+        txtThanhToan.setVisibility(View.INVISIBLE);
+        //txtTienGiamGia.setText(txt);
     }
 
     @Override

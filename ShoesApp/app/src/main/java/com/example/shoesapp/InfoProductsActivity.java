@@ -2,6 +2,8 @@ package com.example.shoesapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,7 +45,7 @@ public class InfoProductsActivity extends AppCompatActivity {
     ViewPager2 viewPager2;
     private DatabaseReference mData;
 
-    private Button btntru, btncong, btnuk7, btnuk8, btnuk9, btnuk10, btnDh;
+    private Button btntru, btncong, btnuk7, btnuk8, btnuk9, btnuk10, btnDh, btnMuaNgay;
 
     private TextView txtsoluong;
     @Override
@@ -55,10 +57,12 @@ public class InfoProductsActivity extends AppCompatActivity {
 //                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_infoproducts);
         mapping1();
+
         //congsl
         btncong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btntru.setEnabled(true);
                 int sl = Integer.parseInt(txtsoluong.getText().toString()) + 1;
                 txtsoluong.setText(String.valueOf(sl));
                 btncong.setVisibility(View.VISIBLE);
@@ -74,6 +78,7 @@ public class InfoProductsActivity extends AppCompatActivity {
         btntru.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btncong.setEnabled(true);
                 int sl = Integer.parseInt(txtsoluong.getText().toString()) - 1;
                 btncong.setVisibility(View.VISIBLE);
                 btntru.setVisibility(View.VISIBLE);
@@ -84,79 +89,28 @@ public class InfoProductsActivity extends AppCompatActivity {
                 }
             }
         });
-        btnDh.setOnClickListener(new View.OnClickListener() {
+        txtsoluong.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                if(MainActivity.mUser != null || LoginActivity.mUser != null){
-                    if(btnSelected && !txtsoluong.getText().equals("0")){ //chọn ca hai
-                        Toast.makeText(InfoProductsActivity.this, "Thêm vào giỏ hàng thành công",
-                                Toast.LENGTH_SHORT).show();
-                        String size = "";
-                        if(btnuk7.isEnabled()){
-                            size = btnuk7.getText().toString();
-                        }else if(btnuk8.isEnabled()){
-                            size = btnuk8.getText().toString();
-                        }else if(btnuk9.isEnabled()){
-                            size = btnuk9.getText().toString();
-                        }else
-                            size = btnuk10.getText().toString();
-                        //Order
-                        boolean exists = false;
-                        if(MainActivity.arrayCart.size() > 0){
-                            int soluong = Integer.parseInt(txtsoluong.getText().toString());
-                            //kiểm tra nếu sp đã đặt thì tăng sl
-                            for(int i = 0; i < MainActivity.arrayCart.size(); i++){
-                                if(MainActivity.arrayCart.get(i).getProductId().equals(products.getProductId())){
-                                    // cap nhat tong sl
-                                    MainActivity.arrayCart.get(i).setQuantity(
-                                            MainActivity.arrayCart.get(i).getQuantity() + soluong);
-                                    //k đặt quá 50sp
-                                    if(MainActivity.arrayCart.get(i).getQuantity() >= 10)
-                                        MainActivity.arrayCart.get(i).setQuantity(10);
-                                    // cap nhat tong gia tien
-//                                MainActivity.arrayCart.get(i).setPrice(
-//                                        products.getPrice() * MainActivity.arrayCart.get(i).getQuantity());
-                                    exists = true;
-                                }
-                            }
-                            if(exists == false){
-                                int sl = Integer.parseInt(txtsoluong.getText().toString());
-                                //int giaMoi = sl * products.getPrice();
-                                MainActivity.arrayCart.add(new Cart(products.getProductId(),
-                                        products.getProductName(), products.getImgProduct(),
-                                        products.getPrice(), sl, size, products.getCateId()));
-                            }
-                        }else {
-                            int sl = Integer.parseInt(txtsoluong.getText().toString());
-                            //int giaMoi = sl * products.getPrice();
-                            MainActivity.arrayCart.add(new Cart(products.getProductId(),
-                                    products.getProductName(), products.getImgProduct(),
-                                    products.getPrice(), sl, size, products.getCateId()));
-                        }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                    }else if(!btnSelected && !txtsoluong.getText().equals("0")){// chọn sl, k chọn size
-                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn size",
-                                Toast.LENGTH_SHORT).show();
-                    }else if(btnSelected && txtsoluong.getText().equals("0")){ //chọn size, k chọn sl
-                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng",
-                                Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng và size",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }else {
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.putExtra("inf", "yes");
-                    startActivity(intent);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(Integer.parseInt(txtsoluong.getText().toString()) == 10){
+                    btncong.setEnabled(false);
                 }
+                if(Integer.parseInt(txtsoluong.getText().toString()) == 0){
+                    btntru.setEnabled(false);
+                }
+            }
 
+            @Override
+            public void afterTextChanged(Editable s) {
 
             }
         });
-
-
-
-
+        AddCartProduct();
     }
     View.OnClickListener uListener = new View.OnClickListener() {
         @Override
@@ -204,6 +158,110 @@ public class InfoProductsActivity extends AppCompatActivity {
             }
         }
     };
+    public void AddCartProduct(){
+        btnDh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MainActivity.mUser != null || LoginActivity.mUser != null){
+                    if(btnSelected && !txtsoluong.getText().equals("0")){ //chọn ca hai
+                        Toast.makeText(InfoProductsActivity.this, "Thêm vào giỏ hàng thành công",
+                                Toast.LENGTH_SHORT).show();
+                        themVaoGioHang();
+                    }else if(!btnSelected && !txtsoluong.getText().equals("0")){// chọn sl, k chọn size
+                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn size",
+                                Toast.LENGTH_SHORT).show();
+                    }else if(btnSelected && txtsoluong.getText().equals("0")){ //chọn size, k chọn sl
+                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng",
+                                Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng và size",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.putExtra("inf", "yes");
+                    startActivity(intent);
+                }
+
+
+            }
+        });
+
+        btnMuaNgay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MainActivity.mUser != null || LoginActivity.mUser != null){
+                    if(btnSelected && !txtsoluong.getText().equals("0")){ //chọn ca hai
+                        themVaoGioHang();
+                        Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+
+                    }else if(!btnSelected && !txtsoluong.getText().equals("0")){// chọn sl, k chọn size
+                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn size",
+                                Toast.LENGTH_SHORT).show();
+                    }else if(btnSelected && txtsoluong.getText().equals("0")){ //chọn size, k chọn sl
+                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng",
+                                Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng và size",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.putExtra("inf", "yes");
+                    startActivity(intent);
+                }
+
+            }
+        });
+    }
+
+    public void themVaoGioHang(){
+        String size = "";
+
+        if(btnuk7.isEnabled()){
+            size = btnuk7.getText().toString();
+        }else if(btnuk8.isEnabled()){
+            size = btnuk8.getText().toString();
+        }else if(btnuk9.isEnabled()){
+            size = btnuk9.getText().toString();
+        }else
+            size = btnuk10.getText().toString();
+        //Order
+        boolean exists = false;
+        if(MainActivity.arrayCart.size() > 0){
+            int soluong = Integer.parseInt(txtsoluong.getText().toString());
+            //kiểm tra nếu sp đã đặt thì tăng sl
+            for(int i = 0; i < MainActivity.arrayCart.size(); i++){
+                if(MainActivity.arrayCart.get(i).getProductId().equals(products.getProductId())){
+                    // cap nhat tong sl
+                    MainActivity.arrayCart.get(i).setQuantity(
+                            MainActivity.arrayCart.get(i).getQuantity() + soluong);
+                    //k đặt quá 50sp
+                    if(MainActivity.arrayCart.get(i).getQuantity() >= 10)
+                        MainActivity.arrayCart.get(i).setQuantity(10);
+                    // cap nhat tong gia tien
+//                                MainActivity.arrayCart.get(i).setPrice(
+//                                        products.getPrice() * MainActivity.arrayCart.get(i).getQuantity());
+                    exists = true;
+                }
+            }
+            if(exists == false){
+                int sl = Integer.parseInt(txtsoluong.getText().toString());
+                //int giaMoi = sl * products.getPrice();
+                MainActivity.arrayCart.add(new Cart(products.getProductId(),
+                        products.getProductName(), products.getImgProduct(),
+                        products.getPrice(), sl, size, products.getCateId()));
+            }
+        }else {
+            int sl = Integer.parseInt(txtsoluong.getText().toString());
+            //int giaMoi = sl * products.getPrice();
+            MainActivity.arrayCart.add(new Cart(products.getProductId(),
+                    products.getProductName(), products.getImgProduct(),
+                    products.getPrice(), sl, size, products.getCateId()));
+        }
+    }
 
     public  void mapping1(){
         ActionBar actionBar = getSupportActionBar();
@@ -253,13 +311,14 @@ public class InfoProductsActivity extends AppCompatActivity {
         btnuk8 = (Button) findViewById(R.id.btn8uk);
         btnuk9 = (Button) findViewById(R.id.btn9uk);
         btnuk10 = (Button) findViewById(R.id.btn10uk);
-        btnDh = (Button) findViewById(R.id.btn_dathang);
+        btnDh = (Button) findViewById(R.id.btn_themGioHang);
 
 
         btnuk7.setOnClickListener(uListener);
         btnuk8.setOnClickListener(uListener);
         btnuk9.setOnClickListener(uListener);
         btnuk10.setOnClickListener(uListener);
+        btnMuaNgay = findViewById(R.id.btn_muangay);
     }
 
     public void mapping(String name, String des, int pri){
@@ -267,9 +326,18 @@ public class InfoProductsActivity extends AppCompatActivity {
         gia = findViewById(R.id.gia);
         tenSp = findViewById(R.id.tensanpham);
         thongtin = findViewById(R.id.thongtin);
+        String[] splitted = des.split("=");
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < splitted.length; i++){
+            //s += splitted[i] + System.getProperty("line.separator");
+            stringBuilder.append(splitted[i]);
+            stringBuilder.append(System.getProperty("line.separator"));
+        }
+        if(stringBuilder != null)
+            thongtin.setText(stringBuilder);
 
         tenSp.setText(name);
-        thongtin.setText(des);
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
         gia.setText(decimalFormat.format(pri));
     }

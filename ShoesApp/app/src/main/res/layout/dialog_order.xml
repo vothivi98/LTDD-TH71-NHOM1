@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#fdd23d">
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:background="@drawable/bg_dialog_order"
+        android:layout_gravity="center"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ĐẶT HÀNG THÀNH CÔNG!"
+        android:textSize="20dp"
+        android:gravity="center_horizontal"
+        android:textColor="#212121"
+        android:layout_marginBottom="10dp"/>
+    <RelativeLayout
+        android:layout_width="280dp"
+        android:layout_height="180dp"
+        android:background="@drawable/botron_dialog_order"
+        android:layout_gravity="center">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="- Đơn hàng của bạn sẽ được nhanh chóng xử lý. Bạn sẽ nhận được hàng trong vòng 2 ngày tới."
+                android:textSize="16dp"
+                android:gravity="left"
+                android:textColor="#000" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="- Bạn thường xuyên kiểm tra điện thoại vì shipper sẽ gọi cho bạn trước khi giao hàng."
+                android:textSize="16dp"
+                android:gravity="left"
+                android:textColor="#000"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="- Cảm ơn bạn đã đặt hàng!"
+                android:textSize="16dp"
+                android:gravity="left"
+                android:textColor="#000"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+    <Button
+        android:id="@+id/btnOk"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="OK"
+        android:background="@drawable/btnformxoa1"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+</LinearLayout>

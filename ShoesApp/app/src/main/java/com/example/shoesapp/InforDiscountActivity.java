@@ -64,31 +64,29 @@ public class InforDiscountActivity extends AppCompatActivity {
         btnSuDung.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-                try {
-                    if(!df.parse(discounts.getStartDate()).before(new Date())){ // chưa tới ngày áp dụng khuyến mãi
-                        Toast.makeText(InforDiscountActivity.this, "Chưa tới ngày áp dụng mã.Vui lòng chọn mã khác", Toast.LENGTH_SHORT).show();
-                        //finish();
-                        Intent intent = new Intent(getApplicationContext(), DiscountsActivity.class);
-                        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        //intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        getApplicationContext().startActivity(intent);
-                    }else {
-                        //finish();
-                        Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
-                        intent.putExtra("discounts", discounts);
-                        //OrderActivity.discount1 = discounts;
-                        //intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getApplicationContext().startActivity(intent);
+                if(MainActivity.arrayCart.size() > 0){
+                    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        if(!df.parse(discounts.getStartDate()).before(new Date())){ // chưa tới ngày áp dụng khuyến mãi
+                            Toast.makeText(InforDiscountActivity.this, "Chưa tới ngày áp dụng mã.Vui lòng chọn mã khác", Toast.LENGTH_SHORT).show();
+                            //finish();
+                            Intent intent = new Intent(getApplicationContext(), DiscountsActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getApplicationContext().startActivity(intent);
+                        }else {
+                            //finish();
+                            Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                            intent.putExtra("discounts", discounts);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getApplicationContext().startActivity(intent);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                }else {
+                    Toast.makeText(InforDiscountActivity.this, "Bạn chỉ được áp dụng mã khuyến mãi khi giỏ hàng có sản phẩm!!", Toast.LENGTH_SHORT).show();
                 }
+
 
             }
         });
