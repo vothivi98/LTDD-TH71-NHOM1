@@ -23,8 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingBottom="1dp"
-        android:background="@drawable/vien">
+        android:paddingBottom="1dp">
         <TextView
             android:layout_marginLeft="10dp"
             android:drawableStart="@drawable/icogiamgia"

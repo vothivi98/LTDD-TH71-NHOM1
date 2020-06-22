@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             }
         });
         //get product
-        mData.child("Products").addValueEventListener(new ValueEventListener() {
+        mData.child("Products").limitToFirst(20).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot dt : dataSnapshot.getChildren()){

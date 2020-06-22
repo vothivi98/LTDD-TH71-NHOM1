@@ -28,6 +28,7 @@ public class SettingActivity extends AppCompatActivity {
         btnSuaMatKhau = findViewById(R.id.btn_DoiMK);
         if(ConfirmAccountActivity.keyReturn){
             btnSuaMatKhau.setEnabled(false);
+            ConfirmAccountActivity.keyReturn = false;
         }else
             btnSuaMatKhau.setEnabled(true);
         btnSuaThongTin.setOnClickListener(new View.OnClickListener() {

@@ -79,9 +79,8 @@
                     android:layout_below="@+id/txts_pham">
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="3dp"
-                        >
+                        android:layout_height="wrap_content"
+                        android:padding="3dp">
 
                         <ImageView
                             android:id="@+id/imgThongBao"
@@ -89,7 +88,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="20dp"
-                            android:src="@drawable/ic_launcher_background"/>
+                            android:src="@drawable/sad"/>
 
 
                         <TextView

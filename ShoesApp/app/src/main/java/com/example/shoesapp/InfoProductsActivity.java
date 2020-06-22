@@ -163,14 +163,14 @@ public class InfoProductsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(MainActivity.mUser != null || LoginActivity.mUser != null){
-                    if(btnSelected && !txtsoluong.getText().equals("0")){ //chọn ca hai
+                    if(btnSelected && Integer.parseInt(txtsoluong.getText().toString()) != 0){ //chọn ca hai
                         Toast.makeText(InfoProductsActivity.this, "Thêm vào giỏ hàng thành công",
                                 Toast.LENGTH_SHORT).show();
                         themVaoGioHang();
-                    }else if(!btnSelected && !txtsoluong.getText().equals("0")){// chọn sl, k chọn size
+                    }else if(!btnSelected && Integer.parseInt(txtsoluong.getText().toString()) != 0){// chọn sl, k chọn size
                         Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn size",
                                 Toast.LENGTH_SHORT).show();
-                    }else if(btnSelected && txtsoluong.getText().equals("0")){ //chọn size, k chọn sl
+                    }else if(btnSelected && Integer.parseInt(txtsoluong.getText().toString()) == 0){ //chọn size, k chọn sl
                         Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng",
                                 Toast.LENGTH_SHORT).show();
                     }else{
@@ -191,16 +191,16 @@ public class InfoProductsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(MainActivity.mUser != null || LoginActivity.mUser != null){
-                    if(btnSelected && !txtsoluong.getText().equals("0")){ //chọn ca hai
+                    if(btnSelected && Integer.parseInt(txtsoluong.getText().toString()) != 0){ //chọn ca hai
                         themVaoGioHang();
                         Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
 
-                    }else if(!btnSelected && !txtsoluong.getText().equals("0")){// chọn sl, k chọn size
+                    }else if(!btnSelected && Integer.parseInt(txtsoluong.getText().toString()) != 0){// chọn sl, k chọn size
                         Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn size",
                                 Toast.LENGTH_SHORT).show();
-                    }else if(btnSelected && txtsoluong.getText().equals("0")){ //chọn size, k chọn sl
+                    }else if(btnSelected && Integer.parseInt(txtsoluong.getText().toString()) == 0){ //chọn size, k chọn sl
                         Toast.makeText(InfoProductsActivity.this, "Vui lòng chọn số lượng",
                                 Toast.LENGTH_SHORT).show();
                     }else{
